@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.1.4'; -- 2024.02.04 09:04:20
+  return '24.2.6'; -- 2024.04.26 19:18:55
 end; $$;
 
 do $$ begin
@@ -248,41 +248,6 @@ begin
 end
 $$;
 
-do $body$
-declare 
-  v_sql text;
-  v_newline char := chr(10); 
-begin
-  v_sql :=
-    'create or replace procedure pgxls._add_query_data(inout xls pgxls.xls, columns_len int, columns_types regtype[]) language plpgsql as $$'||v_newline||
-    'declare'||v_newline||
-    '  v_rec_data record;'||v_newline||
-    'begin'||v_newline||
-    '  call pgxls._trace(xls, ''_add_query_data'', ''started, columns_len=''||columns_len);'||v_newline||
-    '  for v_rec_data in select * from pgxls_query_data order by 1 loop'||v_newline||
-    '    call pgxls.add_row(xls);'||v_newline;
-  for v_column in 1..50 loop
-    v_sql := v_sql||
-      '    if     pgxls._type_is_integer  (columns_types['||v_column||']) then call pgxls.set_cell_integer   (xls, v_rec_data._pgxls_column_'||v_column||'::bigint   );'||v_newline||
-      '    elseif pgxls._type_is_numeric  (columns_types['||v_column||']) then call pgxls.set_cell_numeric   (xls, v_rec_data._pgxls_column_'||v_column||'::numeric  );'||v_newline||
-      '    elseif pgxls._type_is_date     (columns_types['||v_column||']) then call pgxls.set_cell_date      (xls, v_rec_data._pgxls_column_'||v_column||'::date     );'||v_newline||
-      '    elseif pgxls._type_is_time     (columns_types['||v_column||']) then call pgxls.set_cell_time      (xls, v_rec_data._pgxls_column_'||v_column||'::time     );'||v_newline||
-      '    elseif pgxls._type_is_timestamp(columns_types['||v_column||']) then call pgxls.set_cell_timestamp (xls, v_rec_data._pgxls_column_'||v_column||'::timestamp);'||v_newline||
-      '    elseif pgxls._type_is_boolean  (columns_types['||v_column||']) then call pgxls.set_cell_boolean   (xls, v_rec_data._pgxls_column_'||v_column||'::boolean  );'||v_newline||
-      '    else'||v_newline||
-      '      call pgxls.set_cell_text(xls, v_rec_data._pgxls_column_'||v_column||'::text);'||v_newline||  
-      '    end if;'||v_newline|| 
-      '    continue when columns_len='||v_column||';'||v_newline;
-  end loop;
-  v_sql := v_sql||    
-    '  end loop;'||v_newline||
-    '  call pgxls._trace(xls, ''_add_query_data'', ''finished'');'||v_newline||
-    'end'||v_newline||
-    '$$;';
-  execute v_sql;   
-end
-$body$;
-
 create or replace procedure pgxls.add_sheet_by_query(inout xls pgxls.xls, query text, sheet_name varchar default null) language plpgsql as $$
 declare
   v_rec_column record;
@@ -290,45 +255,66 @@ declare
   v_columns_types regtype[];
   v_columns_widths int[];   
   v_columns_len int := 0;
-  v_rec_data record;  
+  v_sql_block text;
 begin
   call pgxls._trace(xls, 'add_sheet_by_query', 'started');
   if to_regtype('pgxls_query_data') is not null then
     drop table pgxls_query_data;
   end if;
   execute 'create temp table pgxls_query_data as select row_number() over()  _pgxls_rownum,t.* from ('||query||') t';
+  v_sql_block :=
+    'do $block$'||xls.newline||
+    'declare '||xls.newline||
+    '  xls pgxls.xls := (select var_xls from pgxls_query_block_var);'||xls.newline||
+    '  rec pgxls_query_data%rowtype;'||xls.newline||
+    'begin '||xls.newline||   
+    '  for rec in select * from pgxls_query_data order by 1 loop'||xls.newline||
+    '    call pgxls.add_row(xls);'||xls.newline;   
   for v_rec_column in  
     select attname,typcategory,typname::regtype
       from pg_attribute a
       join pg_type t on t.oid=a.atttypid
       where attrelid='pgxls_query_data'::regclass and attnum>1
       order by attnum
- loop
-   v_columns_len := v_columns_len + 1;
-   v_columns_names[v_columns_len] := v_rec_column.attname;
-   v_columns_widths[v_columns_len] := 
-     case when v_rec_column.typcategory='N' then 15
-          when v_rec_column.typname in ('date','time','timetz','bool') then 12
-          when v_rec_column.typname in ('timestamp','timestamptz') then 20
-          else 35
-     end;
-   v_columns_widths[v_columns_len] := greatest(v_columns_widths[v_columns_len], length(v_rec_column.attname)*1.5);
-   if     pgxls._type_is_integer  (v_rec_column.typname) then v_columns_types[v_columns_len]:='bigint';
-   elseif pgxls._type_is_numeric  (v_rec_column.typname) then v_columns_types[v_columns_len]:='numeric';
-   elseif pgxls._type_is_date     (v_rec_column.typname) then v_columns_types[v_columns_len]:='date';
-   elseif pgxls._type_is_time     (v_rec_column.typname) then v_columns_types[v_columns_len]:='time';
-   elseif pgxls._type_is_timestamp(v_rec_column.typname) then v_columns_types[v_columns_len]:='timestamp';
-   elseif pgxls._type_is_boolean  (v_rec_column.typname) then v_columns_types[v_columns_len]:='boolean';  
-   else 
-     v_columns_types[v_columns_len]:='text';  
-   end if;
-   execute format('alter table pgxls_query_data rename column %I to _pgxls_column_%s;', v_rec_column.attname, v_columns_len);
-   execute format('alter table pgxls_query_data alter column _pgxls_column_%s type %s;', v_columns_len, v_columns_types[v_columns_len]);  
- end loop;
- call pgxls.add_sheet(xls, v_columns_widths, v_columns_names, sheet_name);
- call pgxls._add_query_data(xls, v_columns_len, v_columns_types);
- drop table pgxls_query_data;
- call pgxls._trace(xls, 'add_sheet_by_query', 'finished');
+  loop
+    v_columns_len := v_columns_len + 1;
+    v_columns_names[v_columns_len] := v_rec_column.attname;
+    v_columns_widths[v_columns_len] := 
+      case when v_rec_column.typcategory='N' then 15
+           when v_rec_column.typname in ('date','time','timetz','bool') then 12
+           when v_rec_column.typname in ('timestamp','timestamptz') then 20
+           else 35
+      end;
+    v_columns_widths[v_columns_len] := greatest(v_columns_widths[v_columns_len], length(v_rec_column.attname)*1.5);
+    v_sql_block := v_sql_block||
+      '    call pgxls.set_cell_'||
+      case when pgxls._type_is_integer  (v_rec_column.typname) then 'integer   (xls, rec.'||quote_ident(v_rec_column.attname)||'::bigint'
+           when pgxls._type_is_numeric  (v_rec_column.typname) then 'numeric   (xls, rec.'||quote_ident(v_rec_column.attname)||'::numeric'
+           when pgxls._type_is_date     (v_rec_column.typname) then 'date      (xls, rec.'||quote_ident(v_rec_column.attname)||'::date'
+           when pgxls._type_is_time     (v_rec_column.typname) then 'time      (xls, rec.'||quote_ident(v_rec_column.attname)||'::time'
+           when pgxls._type_is_timestamp(v_rec_column.typname) then 'timestamp (xls, rec.'||quote_ident(v_rec_column.attname)||'::timestamp'
+           when pgxls._type_is_boolean  (v_rec_column.typname) then 'boolean   (xls, rec.'||quote_ident(v_rec_column.attname)||'::boolean'
+      else                                                          'text      (xls, rec.'||quote_ident(v_rec_column.attname)||'::text'
+      end ||   
+      ');'||xls.newline;   
+  end loop;
+  v_sql_block := v_sql_block||
+    '  end loop;'||xls.newline||  
+    '  update pgxls_query_block_var set var_xls=xls;'||xls.newline||
+    'end'||xls.newline||
+    '$block$'||xls.newline;
+  call pgxls.add_sheet(xls, v_columns_widths, v_columns_names, sheet_name);
+  if to_regtype('pgxls_query_block_var') is null then
+    create temp table pgxls_query_block_var (var_xls pgxls.xls);
+  else
+    delete from pgxls_query_block_var;
+  end if;  
+  insert into pgxls_query_block_var values (xls);
+  execute v_sql_block;
+  xls := (select var_xls from pgxls_query_block_var);
+  drop table pgxls_query_block_var;
+  drop table pgxls_query_data;
+  call pgxls._trace(xls, 'add_sheet_by_query', 'finished');
 end
 $$;
 
@@ -1320,3 +1306,5 @@ begin
   p_cd_len := p_cd_len+length(v_zip);
 end;	
 $$;
+
+
