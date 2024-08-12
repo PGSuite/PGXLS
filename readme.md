@@ -5,21 +5,21 @@ Implemented dependence format on data type, conversion SQL query into sheet with
 
 ### Installation ###
 
-The installer is [pgxls_init.sql](https://github.com/PGXLS/PGXLS/blob/main/pgxls_init.sql) file that creates `pgxls` schema with the necessary procedures.  
+The installer is [pgxls_init.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql) file that creates `pgxls` schema with the necessary procedures.  
 The installation consists in executing it in the psql terminal client or SQL manager, for example:  
 
 ```bash
-wget -O - https://raw.githubusercontent.com/PGXLS/PGXLS/main/pgxls_init.sql | psql -d [database]
+wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
 
 If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.  
-To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/blob/main/pgxls_grants.sql) with the roles variable. For example:
+To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql) with the roles variable. For example:
 
 ```bash
-wget -O - https://raw.githubusercontent.com/PGXLS/PGXLS/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
+wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
 ```
 
-[More info on site](https://pgxls.org/en/download/?target="_blank)
+[More info on site](https://pgxls.org/en/download/)
 &nbsp;  
 &nbsp;  
 
