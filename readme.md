@@ -9,16 +9,19 @@ Implemented dependence format on data type, conversion SQL query into sheet with
 
 Create and get file (bytea) by SQL query
 ```sql
-
 select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10');
-
 ```
 
-Save file on command line
+Save file on command line  
+Linux
 ```bash
-
 psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
+```
 
+Windows
+```cmd
+psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" -o hex.tmp 
+certutil -decodehex -f hex.tmp pg_class.xlsx
 ```
 
 ### Example #2 ###
@@ -54,20 +57,14 @@ select excel_top_relations_by_size();
 ```
 
 Save file on command line  
-Linux
 ```bash
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
-Windows
-```cmd
-psql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" -o hex.tmp 
-certutil -decodehex -f hex.tmp top_relations_by_size.xlsx
-```
-
-
 [More examples on site](https://pgxls.org/en/#examples-full)
-
+     
+     
+     
 
 ### Basic procedures ###
   
