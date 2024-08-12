@@ -1,10 +1,9 @@
 ## PGXLS | Export to Excel from PostgreSQL
 
-Tool `PGXLS` is schema with stored procedures for creating files (bytea type) in Excel format (.xlsx).
+Tool `PGXLS` is schema with stored procedures for creating files (bytea type) in Excel format (.xlsx).  
 Implemented dependence format on data type, conversion SQL query into sheet with autoformat and more.
 
 ### [Download](https://pgxls.org/en/download/) ###
-### [Documentation](https://pgxls.org/en/documentation/) ### 
 
 ### Example #1 ###
 
@@ -16,7 +15,6 @@ select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg
 ```
 
 Save file on command line
-When using programming language, the call encode(,'hex') is not required
 ```bash
 
 psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
@@ -37,17 +35,17 @@ begin
   xls := pgxls.create(array[10,80,15], array['oid','Name','Size, bytes']);
   -- Select data in loop
   for rec in
-    select oid,relname,pg_relation_size(oid) size from pg_class order by 3 desc limit 10    
+    select oid,relname,pg_relation_size(oid) size from pg_class order by 3 desc limit 10
   loop
     -- Add row
     call pgxls.add_row(xls);
     -- Set data from query into cells
-    call pgxls.set_cell_value(xls, rec.oid);      
-    call pgxls.set_cell_value(xls, rec.relname);   
+    call pgxls.set_cell_value(xls, rec.oid); 
+    call pgxls.set_cell_value(xls, rec.relname);
     call pgxls.set_cell_value(xls, rec.size);
-  end loop;  
+  end loop;
   -- Returns file(bytea)
-  return pgxls.get_file(xls);      
+  return pgxls.get_file(xls); 
 end
 $$;
 -- Get file
@@ -55,13 +53,18 @@ select excel_top_relations_by_size();
 
 ```
 
-Save file on command line
-When using programming language, the call encode(,'hex') is not required
+Save file on command line  
+Linux
 ```bash
-
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
-
 ```
+
+Windows
+```cmd
+psql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" -o hex.tmp 
+certutil -decodehex -f hex.tmp top_relations_by_size.xlsx
+```
+
 
 [More examples on site](https://pgxls.org/en/#examples-full)
 
@@ -75,6 +78,8 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 *   **pgxls.set_cell_value** - set cell value
   
 *   **pgxls.get_file** - build and get file
+
+[Documentation on site](https://pgxls.org/en/documentation/)
 
 
 ### Important qualities ### 
