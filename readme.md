@@ -63,8 +63,7 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 
 [More examples on site](https://pgxls.org/en/#examples-full)
 \
-\
-\
+
 ### Basic procedures ###
   
 *   **pgxls.create** - create document
