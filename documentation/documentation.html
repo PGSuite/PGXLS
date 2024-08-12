@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+    margin:  0px;
+    padding: 0px;
+    border:  0px; 
+}
+
+html {
+    height: 100%;
+    font: 14px Verdana, Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+div {
+    text-align: justify;	
+}
+
+p {
+    padding: 5px;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+a, a:link, a:active, a:visited {
+   #color: #0000EE;
+   color: #0000DD;
+   #color: red;
+}
+
+.background-header {
+    background: #F7F7FF;
+}
+
+.background-menu {
+    background: #D0E0FF;
+}
+
+.background-menu-line {
+    background: #90A0C0;
+}
+
+.border-color-menu {
+    border-color: #90A0C0;
+}
+
+.color-menu-item {
+    color: #2020A0;
+}
+
+.color-menu-item-selected { 
+    color: #E78C43; 
+}
+
+.background-menu-selected-top { 
+    background: #C8D8E8;
+}
+
+.border-color-div-source-code {
+    border-color: #909090;
+}
+
+.color-source-sql-comment {
+    color: #008000;
+}
+
+.color-source-sql-string {
+    color: #800060;
+}
+
+.color-source-sql-keyword {
+    color: #000080;
+}
+
+.color-source-sql-block-border {
+    color: #DD0000;
+}
+
+.color-source-shell {
+    color: green;
+}
+
+.background-source-shell {
+    background: black;    
+}
+
+.color-source-html-tag {
+    color: #0000CD;
+}
+
+.color-source-html-tag-attrubites {
+    color: #B22222;
+}
+
+.color-source-html-tag-value {
+    color: #008000;
+}
+
+.color-source-html-comment {
+    color: #808080;
+}
+
+.color-source-js-comment {
+    color: #008000;
+}
+
+.color-source-js-keyword {
+    color: #000080;
+}
+
+.color-source-js-string {
+    color: #800060;
+}
+
+.div-page {
+    #border: solid 3px red;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.div-header-middle {
+    #border: solid 3px green;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+	text-align: center;
+}
+
+.div-header-sidebar {
+    #border: solid 3px blue;
+    display: flex;    
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
+} 
+
+.div-content {
+    display: flex;
+    flex-wrap: nowrap;
+    #justify-content: space-evenly; 
+    justify-content: space-between;
+}
+
+.div-content-panel-left {
+    #border: solid 3px green;
+    width:     260px;
+    min-width: 260px;
+    max-width: 260px;
+    float: left;
+    text-align: left;
+    padding-top: 10px;
+    padding-bottom: 15px;
+} 
+
+.div-content-body {
+    #border: solid 3px blue;
+    #margin-left: 270px;
+    padding: 10px;
+    border-left-style: solid;
+    border-left-width: 2px;
+}
+
+.menu-border-top {
+    border-top-style: solid;
+    border-top-width: 2px;
+} 
+
+.menu-border-left {
+    border-left-style: solid;
+    border-left-width: 2px;
+}
+
+.menu-border-right {
+    border-right-style: solid;
+    border-right-width: 2px;
+}
+
+.menu-border-bottom {
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+.menu-top-item {
+    text-decoration: none;
+    font-size: larger;
+    white-space: nowrap;
+}
+
+.menu-top-item-selected {
+    font-size: larger;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.menu-panel-left-item {
+    padding-left: 15px;
+    text-decoration: none; 
+    font-size: larger;
+}
+
+.menu-panel-left-item-selected {
+    padding-left: 25px;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.nav-static-line {
+    font-size: larger;
+    background: #D0E0FF;
+}
+    
+.nav-static-line > ul {
+    list-style: none;
+    padding: 0px;
+}
+
+.nav-static-line > ul > li {
+    #border: 2px solid red;
+    padding: 0px;
+    float: left;    
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+}
+   
+.nav-static-line .item {
+    padding: 7px;      
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.nav-static-line .item-selected {
+    font-weight: bold;
+}
+
+.nav-mobile {
+    margin: 0 auto;
+	float: left;
+    background: #D0E0FF;
+}
+   
+.nav-mobile ul {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.nav-mobile li li {
+	width: 160px;
+}
+   
+.nav-mobile > ul > li {
+    float: left;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+}
+
+.nav-mobile-group-root {
+    display: none;
+    position: absolute;
+    top: 100%;
+}
+
+.nav-mobile li:hover > .nav-mobile-group-root {
+    display: block;
+}
+
+.nav-mobile-group-child {
+	display: none;
+	position: absolute;
+	left: 100%;
+	top: 0;
+}
+    
+.nav-mobile li li:hover > .nav-mobile-group-child-1 {
+	display: block;
+}
+
+.nav-mobile li li li:hover > .nav-mobile-group-child-2 {
+	display: block;
+}
+
+.nav-mobile-item {  
+    padding: 6px;    
+    display: block;
+    text-align: left;
+    text-decoration: none;
+    color: #2020A0;	
+}
+
+.nav-mobile-item:hover {
+   background: #2F718E;
+}
+
+.ul-articles li {
+    padding-top: 17px;
+}
+
+.div-video-iframe {
+    width: 560px;
+    height: 315px;
+}
+
+.div-source-code {
+    #border: solid 2px red;
+    overflow:scroll;
+    min-width: 95%;
+    max-width: 200px;   
+    border-style: solid;
+    border-width: 1px; 
+    font-family: monospace;
+    text-align: left;
+}
+
+.div-download {
+    border-style: solid;
+    border-width: 1px;  
+    text-align: center;
+}
+
+.a-download {
+    text-decoration: none;
+}
+
+.div-documentation-synopsis {
+    #border: solid 3px red;
+    margin-left:    30px;
+    margin-right:    0px; 
+    margin-top:      3px;
+    margin-bottom:   0px;
+}
+
+.div-documentation-desc {
+    #border: solid 3px red;
+    margin-left:    30px;
+    margin-right:  100px; 
+    margin-top:      3px;
+    margin-bottom:   0px;
+}
+
+@media (max-width: 900px) {
+
+    #header-desktop {
+        display: none;
+    }
+
+    #menu-top-line-1 {
+        display: none;
+    }
+
+    .div-content-panel-left {
+        display: none;
+    } 
+
+    .div-content-body {
+        border-left-width: 0px;
+    }
+
+    .div-video-iframe {
+        width: 370px;
+        height: 210px;
+    }
+
+}
+
+@media not (max-width: 900px) {
+
+    #header-mobile {
+        display: none;
+    }
+
+}
+
+.button-top {
+  display: none; 
+  position: fixed;
+  right: 10px;
+  bottom: 40px;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px 8px;
+  border-style: solid; 
+  border-width: 2px;
+}
+
+.button-top-visible {
+  display: block;
+} 
+</style>
+
+
+<title>PGXLS | Documentation</title>
+	
+</head>
+<body>
+
+<div id="header-desktop" class="div-page background-header menu-border-bottom border-color-menu" style="justify-content: center; padding: 10px;">
+
+  <h1>PGXLS | Documentation</h1>
+
+</div>
+
+
+<div class='div-page' style='flex: 1; clear:both;'>
+
+  <div class='div-content-panel-left'>
+    
+
+<ul>
+<li><a href="#usage_method">Usage method</a></li>
+
+<li><a href="#add_row">add_row</a></li>
+<li><a href="#add_sheet">add_sheet</a></li>
+<li><a href="#add_sheet_by_query">add_sheet_by_query</a></li>
+<li><a href="#alignment_horizontal">alignment_horizontal</a></li>
+<li><a href="#alignment_vertical">alignment_vertical</a></li>
+
+<li><a href="#border_line">border_line</a></li>
+
+<li><a href="#clear_file_parts">clear_file_parts</a></li>
+<li><a href="#color_by_name">color$[name]</a></li>
+<li><a href="#create">create</a></li>
+
+<li><a href="#font_name_by_family">font_name$[family]</a></li>
+
+<li><a href="#get_column_name">get_column_name</a></li>
+<li><a href="#get_file">get_file</a></li>
+<li><a href="#get_file_by_query">get_file_by_query</a></li>
+<li><a href="#get_file_parts_query">get_file_parts_query</a></li>
+<li><a href="#get_format_code_boolean">get_format_code_boolean</a></li>
+<li><a href="#get_format_code_numeric">get_format_code_numeric</a></li>
+
+<li><a href="#next_column">next_column</a></li>
+<li><a href="#pgxls_version">pgxls_version</a></li>
+
+<li><a href="#set_cell_type">set_cell_[type]</a></li>
+<li><a href="#set_cell_alignment">set_cell_alignment</a></li>
+<li><a href="#set_cell_border">set_cell_border</a></li>
+<li><a href="#set_cell_fill">set_cell_fill</a></li>
+<li><a href="#set_cell_font">set_cell_font</a></li>
+<li><a href="#set_cell_format">set_cell_format</a></li>
+<li><a href="#set_cell_value">set_cell_value</a></li>
+
+<li><a href="#set_column_alignment_type">set_column_alignment_[type]</a></li>
+<li><a href="#set_column_border_type">set_column_border_[type]</a></li>
+<li><a href="#set_column_current">set_column_current</a></li>
+<li><a href="#set_column_fill_type">set_column_fill_[type]</a></li>
+<li><a href="#set_column_font_type">set_column_font_[type]</a></li>
+<li><a href="#set_column_format_type">set_column_format_[type]</a></li>
+
+<li><a href="#set_row_height">set_row_height</a></li>
+
+<li><a href="#xls">xls</a></li>
+</ul>
+
+
+
+  </div>
+
+  <div class='div-content-body border-content-body border-color-menu'>
+    
+
+<a id="usage_method"></a>
+<p style="font-size:larger;"><b>Usage method</b></p>
+<br>
+
+PL/pgSQL function is created that does:
+created document (<a href="#create">pgxls.create</a>), 
+adds rows and sheets, sets document cells (<a href="#add_row">pgxls.add_row</a>, <a href="#add_sheet">pgxls.add_sheet</a>),
+sets cells (<a href="#set_cell_value">pgxls.set_cell_value</a>),
+builds and returns file (<a href="#get_file">pgxls.get_file</a>).
+<br>
+<br>
+Column count and their width are determined when creating a document or adding a sheet.
+For each column, can override style depending on data type using procedures
+pgxls.set_column_[<a href="#set_column_alignment_type">alignment</a>|<a href="#set_column_border_type">border</a>|<a href="#set_column_fill_type">fill</a>|<a href="#set_column_font_type">font</a>|<a href="#set_column_format_type">format</a>]_[type].
+<br>
+<br>
+Cell value set using procedure <a href="#set_cell_value">pgxls.set_cell_value</a>,
+which copies style from column style depending on value type
+and has optional parameters to change any style property.
+Also style properties can be changed by separate procedures pgxls.set_cell_[<a href="#set_cell_alignment">alignment</a>|<a href="#set_cell_border">border</a>|<a href="#set_cell_fill">fill</a>|<a href="#set_cell_font">font</a>|<a href="#set_cell_format">format</a>].
+<br>
+<br>
+For ease of use, the current column is determined, which is reset when a row is added and incremented when setting a field value without specifying a column.
+Procedures <a href="#set_column_current">pgxls.set_column_current</a> and <a href="#next_column">pgxls.next_column</a> change current column explicitly.
+<br>
+<br>
+When adding row or sheet, current row written to temporary table and cannot be changed.
+Row height calculated automatically, but can be set manually using procedure
+<a href="#set_row_height">pgxls.set_row_height</a>.
+<br>
+<br>
+When creating large files, must use procedures <a href="#set_cell_type">pgxls.set_cell_[type]</a> for sets cells
+and get file in parts (<a href="#get_file_parts_query">pgxls.get_file_parts_query</a>).
+<br>
+<br>
+There are functions <a href="#get_file_by_query">pgxls.get_file_by_query</a> and <a href="#add_sheet_by_query">pgxls.add_sheet_by_query</a>
+to get file and add sheet by SQL query.
+<br>
+<br>
+Not allowed to access internal fields of pgxls.xls and use procedures and types that start with underscore "_"
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="add_row"></a>
+<p style="font-size:larger;"><b>pgxls.add_row</b></p>
+<br>
+Procedure adds one or more rows to sheet, sets current column to zero
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">count int</td><td style="text-align: center; width: 30px;">-</td><td>row count (optional, default 1)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 80px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.add_row(xls);
+<span class="color-source-sql-keyword">call</span> pgxls.add_row(xls, 5);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="add_sheet"></a>
+<p style="font-size:larger;"><b>pgxls.add_sheet</b></p>
+<br>
+Procedure adds new sheet to document
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">columns_widths int[]</td><td style="text-align: center; width: 30px;">-</td><td>columns widths</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">columns_captions text[]</td><td style="text-align: center; width: 30px;">-</td><td>columns captions (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">sheet_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>sheet name (optional)</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.add_sheet(xls, <span class="color-source-sql-keyword">array</span>[10,20], <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'ID'</span>,<span class="color-source-sql-string">'Name'</span>], <span class="color-source-sql-string">'Sheet2'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="add_sheet_by_query"></a>
+<p style="font-size:larger;"><b>pgxls.add_sheet_by_query</b></p>
+<br>
+Procedure adds new sheet with SQL query data
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">query text</td><td style="text-align: center; width: 30px;">-</td><td>SQL query</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">sheet_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>sheet name (optional)</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.add_sheet(xls, <span class="color-source-sql-keyword">array</span>[10,20], <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'ID'</span>,<span class="color-source-sql-string">'Name'</span>], <span class="color-source-sql-string">'Sheet2'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="alignment_horizontal"></a>
+<p style="font-size:larger;"><b>pgxls.alignment_horizontal</b></p>
+<br>
+Enum type, defines horizontal alignment
+<br>
+Values: left,center,right,justify,fill,distributed
+<br>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="alignment_vertical"></a>
+<p style="font-size:larger;"><b>pgxls.alignment_vertical</b></p>
+<br>
+Enum type, defines vertical alignment
+<br>
+Values: top,center,bottom,justify,distributed
+<br>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<br>
+<a id="border_line"></a>
+<p style="font-size:larger;"><b>pgxls.border_line</b></p>
+<br>
+Enum type, defines border line
+<br>
+Values: none,thin,thick,dashed,dotted,dashDot,dashDotDot,double
+<br>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="clear_file_parts"></a>
+<p style="font-size:larger;"><b>pgxls.clear_file_parts</b></p>
+<br>
+Procedure removes file from temporary table, used together with <a href="#clear_file_parts"><em>pgxls.get_file_parts_query</em></a>
+<br>
+<br>
+Parameter:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+</table>
+
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="color_by_name"></a>
+<p style="font-size:larger;"><b>color$[name]</b></p>
+<br>
+Function returns color (type varchar(6)) by name
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">name</td><td style="text-align: center; width: 30px;">-</td><td>name: light_red,light_green,light_blue,dark_red,dark_green,dark_blue</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_font(xls, color=&#62;pgxls.color&dollar;light_red());
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="create"></a>
+<p style="font-size:larger;"><b>pgxls.create</b></p>
+<br>
+Function creates, initializes and returns document (type pgxls.xls)
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">columns_widths int[]</td><td style="text-align: center; width: 30px;">-</td><td>columns widths</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">columns_captions text[]</td><td style="text-align: center; width: 30px;">-</td><td>columns captions (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">sheet_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>sheet name (optional)</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 105px;">
+<pre><span class="color-source-sql-keyword">declare</span> 
+  xls pgxls.xls; 
+<span class="color-source-sql-keyword">begin</span>
+  xls := pgxls.<span class="color-source-sql-keyword">create</span>(<span class="color-source-sql-keyword">array</span>[10,20,30], sheet_name=&#62;<span class="color-source-sql-string">'My sheet'</span>);
+</pre>
+</div>
+
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="font_name_by_family"></a>
+<p style="font-size:larger;"><b>pgxls.font_name$[family]</b></p>
+<br>
+Function returns name (type varchar) by font family
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">family</td><td style="text-align: center; width: 30px;">-</td><td>font family: sans,sans_serif,monospace</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_font(xls, 1, <span class="color-source-sql-keyword">name</span>=&#62;pgxls.font_name&dollar;sans_serif(), size=&#62;16);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, 123, font_name=&#62;pgxls.font_name&dollar;monospace());
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_column_name"></a>
+<p style="font-size:larger;"><b>pgxls.get_column_name</b></p>
+<br>
+Function returns column name (type varchar) by number
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre>column_name := pgxls.get_column_name(5);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_file"></a>
+<p style="font-size:larger;"><b>pgxls.get_file</b></p>
+<br>
+Function builds and returns file (type bytea)
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre>return pgxls.get_file(xls);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_file_by_query"></a>
+<p style="font-size:larger;"><b>pgxls.get_file_by_query</b></p>
+<br>
+Function creates document by SQL query, builds and returns file (type bytea)
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">query text</td><td style="text-align: center; width: 30px;">-</td><td>SQL query</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">select</span> pgxls.get_file_by_query(<span class="color-source-sql-string">'select * from pg_class'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_file_parts_query"></a>
+<p style="font-size:larger;"><b>pgxls.get_file_parts_query</b></p>
+<br>
+Function builds file and returns SQL query (varchar type) to get file in parts.
+Used for large files, after receiving  file, need to call procedure <a href="#clear_file_parts"><em>pgxls.clear_file_parts</em></a>
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre>return query <span class="color-source-sql-keyword">execute</span> pgxls.get_file_parts_query(xls);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_format_code_boolean"></a>
+<p style="font-size:larger;"><b>pgxls.get_format_code_boolean</b></p>
+<br>
+Function builds logical format code (varchar type)
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_true  varchar</td><td style="text-align: center; width: 30px;">-</td><td>text for true value (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_false varchar</td><td style="text-align: center; width: 30px;">-</td><td>text for false value (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_null  varchar</td><td style="text-align: center; width: 30px;">-</td><td>text for null value (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre>format1 := pgxls.get_format_code_boolean(<span class="color-source-sql-string">'Yes'</span>, <span class="color-source-sql-string">'No'</span>, <span class="color-source-sql-string">'Null'</span>);
+format2 := pgxls.get_format_code_boolean(text_true=&#62;<span class="color-source-sql-string">'1'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="get_format_code_numeric"></a>
+<p style="font-size:larger;"><b>pgxls.get_format_code_numeric</b></p>
+<br>
+Function builds numeric format code (varchar type)
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">decimal_places int</td><td style="text-align: center; width: 30px;">-</td><td>decimal places</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">thousands_separated boolean</td><td style="text-align: center; width: 30px;">-</td><td>thousands separated (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre>format1 := pgxls.get_format_code_numeric(3);
+format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separated=&#62;<span class="color-source-sql-keyword">true</span>);
+</pre>
+</div>
+
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="next_column"></a>
+<p style="font-size:larger;"><b>pgxls.next_column</b></p>
+<br>
+Procedure increases current column
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.next_column(xls);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="pgxls_version"></a>
+<p style="font-size:larger;"><b>pgxls.pgxls_version</b>()</p>
+<br>
+Function returns tool version
+<br>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_[type]</b></p>
+<br>
+Procedure sets cell value, assigns current column.
+<br>
+Used for large documents (no type checking and no style change)
+In other cases, recommended to use <a href="#set_cell_value"><em>pgxls.set_cell_value</em></a>
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">value [type]</td><td style="text-align: center; width: 30px;">-</td><td>value</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column (optional, default next)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 100px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_integer(xls, 123);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_numeric(xls, 123.4567, 2);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_text(xls, <span class="color-source-sql-string">'Hello'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_boolean(xls, <span class="color-source-sql-keyword">false</span>, column_=&#62;4);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_alignment"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_alignment</b></p>
+<br>
+Procedure sets alignment of value in cell
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>vertical alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>indent</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>, column_=&#62;1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_border"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_border</b></p>
+<br>
+Procedure sets cell border
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">around pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border around (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">left_ pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border left (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">top pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border top (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">right_ pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border right (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bottom pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border bottom (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_border(xls, around=&#62;<span class="color-source-sql-string">'thin'</span>, column_=&#62;1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_border(xls, top=&#62;<span class="color-source-sql-string">'dashed'</span>, bottom=&#62;<span class="color-source-sql-string">'dashed'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_border(xls, left_=&#62;<span class="color-source-sql-string">'none'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_fill"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_fill</b></p>
+<br>
+Procedure sets cell fill
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">foreground_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>color in format &#39;RRGGBB&#39;</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_fill(xls, <span class="color-source-sql-string">'FF007700'</span>, column_=&#62;1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_fill(xls, foreground_color=&#62;pgxls.color&dollar;dark_red());
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_fill(xls, <span class="color-source-sql-string">'none'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_font"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_font</b></p>
+<br>
+Procedure sets cell font
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">name varchar</td><td style="text-align: center; width: 30px;">-</td><td>name (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">size int</td><td style="text-align: center; width: 30px;">-</td><td>size (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bold boolean</td><td style="text-align: center; width: 30px;">-</td><td>bold (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">italic boolean</td><td style="text-align: center; width: 30px;">-</td><td>italic (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">underline boolean</td><td style="text-align: center; width: 30px;">-</td><td>underline (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">strike boolean</td><td style="text-align: center; width: 30px;">-</td><td>strike (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>color in format &#39;RRGGBB&#39; (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_font(xls, <span class="color-source-sql-keyword">name</span>=&#62;<span class="color-source-sql-string">'Times New Roman'</span>, bold=&#62;<span class="color-source-sql-keyword">true</span>, column_=&#62;1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_font(xls, <span class="color-source-sql-keyword">name</span>=&#62;pgxls.font_name&dollar;monospace(), italic=&#62;<span class="color-source-sql-keyword">false</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_font(xls, color=&#62;<span class="color-source-sql-string">'FF007700'</span>, underline=&#62;<span class="color-source-sql-keyword">true</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_format"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_format</b></p>
+<br>
+Procedure sets cell format
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">code varchar</td><td style="text-align: center; width: 30px;">-</td><td>format code</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 140px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_format(xls, <span class="color-source-sql-string">'0.000'</span>, column_=&#62;1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_format(xls, <span class="color-source-sql-string">'dd.mm.yyyy hh:mm'</span>);
+
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_format(xls, thousands_separated=&#62;<span class="color-source-sql-keyword">true</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_format(xls, decimal_places=&#62;2, thousands_separated=&#62;<span class="color-source-sql-keyword">false</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_format(xls, text_true=&#62;<span class="color-source-sql-string">'YES'</span>, text_false=&#62;<span class="color-source-sql-string">'NO'</span>, text_null=&#62;<span class="color-source-sql-string">'NULL'</span>);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_cell_value"></a>
+<p style="font-size:larger;"><b>pgxls.set_cell_value</b></p>
+<br>
+Procedure sets cell value and allows to change style parameters, assigns current column
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">value anyelement</td><td style="text-align: center; width: 30px;">-</td><td>value</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">format_code varchar</td><td style="text-align: center; width: 30px;">-</td><td>format code (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>font name (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size int</td><td style="text-align: center; width: 30px;">-</td><td>font size (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_bold boolean</td><td style="text-align: center; width: 30px;">-</td><td>bold font (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_italic boolean</td><td style="text-align: center; width: 30px;">-</td><td>italic font (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_underline boolean</td><td style="text-align: center; width: 30px;">-</td><td>underline font (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_strike boolean</td><td style="text-align: center; width: 30px;">-</td><td>strike font (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>font color in format &#39;RRGGBB&#39; (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_around pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border around (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_left pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border left (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_top pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border top (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_right pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border right (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_bottom pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border bottom (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>fill color in format &#39;RRGGBB&#39; (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_indent int</td><td style="text-align: center; width: 30px;">-</td><td>alignment indent (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>vertical alignment (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 100px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, 123);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, now(), 2, format_code=&#62;<span class="color-source-sql-string">'dd.mm.yyyy hh:mm'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, <span class="color-source-sql-string">'Hello'</span>::<span class="color-source-sql-keyword">text</span>, font_size=&#62;10, font_bold=&#62;<span class="color-source-sql-keyword">true</span>, fill_foreground_color=&#62;<span class="color-source-sql-string">'FF007700'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, <span class="color-source-sql-keyword">true</span>, border_around=&#62;<span class="color-source-sql-string">'thin'</span>, alignment_horizontal=&#62;<span class="color-source-sql-string">'left'</span>, alignment_indent=&#62;2);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_alignment_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_alignment_[type]</b></p>
+<br>
+Procedure sets alignment of values in cells of column depending on data type.
+If data type not specified (procedure <em>pgxls.set_column_alignment</em>), then alignment set for all types.
+Horizontal alignment determined by type <a href="#alignment_horizontal">pgxls.alignment_horizontal</a>,
+vertical - <a href="#alignment_vertical">pgxls.alignment_vertical</a>
+
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>alignment indent</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>vertical alignment (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment(xls, 1, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_integer(xls, 2, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_text(xls, 3, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_border_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_border_[type]</b></p>
+<br>
+Procedure sets border cells of column depending on data type.
+If data type not specified (procedure <em>pgxls.set_column_border</em>), then border set for all types.
+Border line determined by type <a href="#border_line">pgxls.set_border_line</a>, to cancel border uses 'none'
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">around pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border around (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">left_ pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border left (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">top pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border top (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">right_ pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border right (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bottom pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border bottom (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_border(xls, 1, around=&#62;<span class="color-source-sql-string">'thin'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_border_integer(xls, 2, top=&#62;<span class="color-source-sql-string">'dashed'</span>, bottom=&#62;<span class="color-source-sql-string">'dashed'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_border_date(xls, 3, left_=&#62;<span class="color-source-sql-string">'none'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_current"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_current</b></p>
+<br>
+Procedure sets current column
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_current(xls, 5);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_fill_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_fill_[type]</b></p>
+<br>
+Procedure sets fill cells of column depending on data type.
+If data type not specified (procedure <em>pgxls.set_column_fill</em>), then fill set for all types.
+To cancel fill uses 'none' value for <em>foreground_color</em> parameter 
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">foreground_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>color in format &#39;RRGGBB&#39;</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_fill(xls, 1, <span class="color-source-sql-string">'FF007700'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_fill_integer(xls, 2, foreground_color=&#62;pgxls.color&dollar;dark_red());
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_fill_integer(xls, 3, <span class="color-source-sql-string">'none'</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_font_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_font_[type]</b></p>
+<br>
+Procedure sets font cells of column depending on data type.
+If data type not specified (procedure <em>pgxls.set_column_font</em>), then font set for all types.
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">name varchar</td><td style="text-align: center; width: 30px;">-</td><td>name (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">size int</td><td style="text-align: center; width: 30px;">-</td><td>size (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bold boolean</td><td style="text-align: center; width: 30px;">-</td><td>bold (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">italic boolean</td><td style="text-align: center; width: 30px;">-</td><td>italic (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">underline boolean</td><td style="text-align: center; width: 30px;">-</td><td>underline (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">strike boolean</td><td style="text-align: center; width: 30px;">-</td><td>strike (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>color in format &#39;RRGGBB&#39; (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_font(xls, 1, <span class="color-source-sql-keyword">name</span>=&#62;<span class="color-source-sql-string">'Times New Roman'</span>, bold=&#62;<span class="color-source-sql-keyword">true</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_font_integer(xls, 2, <span class="color-source-sql-keyword">name</span>=&#62;pgxls.font_name&dollar;monospace(), italic=&#62;<span class="color-source-sql-keyword">false</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_font_date(xls, 3, color=&#62;<span class="color-source-sql-string">'FF007700'</span>, underline=&#62;<span class="color-source-sql-keyword">true</span>);
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_column_format_type"></a>
+<p style="font-size:larger;"><b>pgxls.set_column_format_[type]</b></p>
+<br>
+Procedure sets format cells of column depending on data type.
+<br>
+<br>
+For ease of use, available procedures for integer, numeric and boolean data types:
+<br>
+<em>
+pgxls.set_column_format_integer(inout xls pgxls.xls, column_ int, thousands_separated boolean default true)<br>
+pgxls.set_column_format_numeric(inout xls pgxls.xls, column_ int, decimal_places int default 2, thousands_separated boolean default true)<br>
+pgxls.set_column_format_boolean(inout xls pgxls.xls, column_ int, text_true varchar default 'True', text_false varchar default 'False', text_null varchar default '')<br>
+</em>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">type</td><td style="text-align: center; width: 30px;">-</td><td>data type: text,integer,numeric,date,time,timestamp,boolean</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">code varchar</td><td style="text-align: center; width: 30px;">-</td><td>format code</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 140px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_format_numeric(xls, 1, <span class="color-source-sql-string">'0.000'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_format_timestamp(xls, 2, <span class="color-source-sql-string">'dd.mm.yyyy hh:mm'</span>);
+
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_format_integer(xls, 10, thousands_separated=&#62;<span class="color-source-sql-keyword">true</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_format_numeric(xls, 11, decimal_places=&#62;2, thousands_separated=&#62;<span class="color-source-sql-keyword">false</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_format_boolean(xls, 12, text_true=&#62;<span class="color-source-sql-string">'YES'</span>, text_false=&#62;<span class="color-source-sql-string">'NO'</span>, text_null=&#62;<span class="color-source-sql-string">'NULL'</span>);
+</pre>
+</div>
+
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_row_height"></a>
+<p style="font-size:larger;"><b>pgxls.set_row_height</b></p>
+<br>
+Procedure sets height of current row
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">height</td><td style="text-align: center; width: 30px;">-</td><td>height</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, 20);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="xls"></a>
+<p style="font-size:larger;"><b>pgxls.xls</b></p>
+<br>
+Composite type, document data
+<br>
+<br>
+
+
+
+  </div>
+
+</div>
+
+</body>
+</html>
