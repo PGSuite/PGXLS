@@ -3,7 +3,25 @@
 Tool `PGXLS` is schema with stored procedures for creating files (bytea type) in Excel format (.xlsx).\
 Implemented dependence format on data type, conversion SQL query into sheet with autoformat and more.
 
-### [Download](https://pgxls.org/en/download/) ###
+### Installation ###
+
+The installer is [pgxls_init.sql](https://github.com/PGXLS/PGXLS/blob/main/pgxls_init.sql) file that creates `pgxls` schema with the necessary procedures.  
+The installation consists in executing it in the psql terminal client or SQL manager, for example:  
+
+```bash
+wget -O - https://raw.githubusercontent.com/PGXLS/PGXLS/main/pgxls_init.sql | psql -d [database]
+```
+
+If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.  
+To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/blob/main/pgxls_grants.sql) with the roles variable. For example:
+
+```bash
+wget -O - https://raw.githubusercontent.com/PGXLS/PGXLS/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
+```
+
+[More info on site](https://pgxls.org/en/download/)
+&nbsp;  
+&nbsp;  
 
 ### Example #1 ###
 
@@ -76,6 +94,8 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 *   **pgxls.get_file** - build and get file
 
 [Documentation on site](https://pgxls.org/en/documentation/)
+&nbsp;  
+&nbsp;  
 
 
 ### Important qualities ### 
