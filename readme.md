@@ -19,7 +19,7 @@ To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS
 wget -O - https://raw.githubusercontent.com/PGXLS/PGXLS/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
 ```
 
-[More info on site](https://pgxls.org/en/download/){:target="_blank"}
+[More info on site](https://pgxls.org/en/download/ target="_blank)
 &nbsp;  
 &nbsp;  
 
