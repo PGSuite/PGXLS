@@ -14,15 +14,15 @@ select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg
 
 Save file on command line  
 Linux
-```bash
+``bash
 psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
-```
+``
 
 Windows
-```cmd
+``cmd
 psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" -o hex.tmp 
 certutil -decodehex -f hex.tmp pg_class.xlsx
-```
+``
 
 ### Example #2 ###
 
@@ -56,7 +56,7 @@ select excel_top_relations_by_size();
 
 ```
 
-Save file on command line  
+Save file on command line
 ```bash
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
