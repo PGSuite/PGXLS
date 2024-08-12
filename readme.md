@@ -19,10 +19,11 @@ select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg
 
 ```
 
+Save file on command line
 
-```python
+```bash
 
-select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10');
+psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
 
 ```
 
