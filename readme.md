@@ -61,9 +61,10 @@ Save file on command line
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
-[More examples on site](https://pgxls.org/en/#examples-full)  
- 
-
+[More examples on site](https://pgxls.org/en/#examples-full)
+&nbsp;
+&nbsp;
+&nbsp;
 
 ### Basic procedures ###
   
