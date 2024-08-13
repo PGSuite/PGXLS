@@ -70,7 +70,7 @@ Save file on command line
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
-More examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/example)
+All examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/example)
 
 ### Basic procedures ###
   
