@@ -98,9 +98,10 @@ Documentation in file [documentation/documentation.html](https://htmlpreview.git
 
 ### Support ### 
 
-Of course you can create an issue, i will answer all requests.
-Also i will help to install and use the tool.
+Of course you can create an issue, i will answer all requests.  
+Also i will help to install and use the tool.  
+Welcome to discussion !  
 
-WhatsApp: [PGSuite](https://wa.me/79361397626)
+WhatsApp: [PGSuite (79361397626)](https://wa.me/79361397626)  
 email: [support\@pgsuite.org](mailto:support@pgsuite.org?subject=PGXLS)
 
