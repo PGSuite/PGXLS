@@ -31,15 +31,8 @@ select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg
 ```
 
 Save file on command line\
-Linux
 ```bash
 psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
-```
-
-Windows
-```cmd
-psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" -o hex.tmp 
-certutil -decodehex -f hex.tmp pg_class.xlsx
 ```
 
 ### Example #2 ###
@@ -80,8 +73,7 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 ```
 
 [More examples on site](https://pgxls.org/en/#examples-full)
-&nbsp;  
-&nbsp;  
+
 
 ### Basic procedures ###
   
@@ -93,9 +85,7 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
   
 *   **pgxls.get_file** - build and get file
 
-[Documentation on site](https://pgxls.org/en/documentation/)
-&nbsp;  
-&nbsp;  
+Documentation in [file documentation/documentation.html](https://htmlpreview.github.io/?https://github.com/PGXLS/PGXLS/blob/main/documentation/documentation.html)
 
 
 ### Important qualities ### 
@@ -105,3 +95,5 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 *   **SQL queries** - it is possible to add sheet with the results of SQL query
 *   **Styles** - for columns and cells, support format, font, border, fill and alignment
 *   **Parallelism** - possible to create several files in parallel in one session
+
+### Support ### 
