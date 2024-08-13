@@ -12,7 +12,7 @@ The installation consists in executing it in the psql terminal client or SQL man
 wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
 
-Optional. If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.  
+Optional. If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.
 To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql) with the roles variable. For example:
 
 ```bash
@@ -95,6 +95,10 @@ Documentation in file [documentation/documentation.html](https://htmlpreview.git
 *   **SQL queries** - it is possible to add sheet with the results of SQL query
 *   **Styles** - for columns and cells, support format, font, border, fill and alignment
 *   **Parallelism** - possible to create several files in parallel in one session
+
+Overview on site [pgxls.org](https://pgxls.org/)
+&nbsp;  
+
 
 ### Support ### 
 

@@ -653,7 +653,7 @@ a, a:link, a:active, a:visited {
 <a id="clear_file_parts"></a>
 <p style="font-size:larger;"><b>pgxls.clear_file_parts</b></p>
 <br>
-Процедура удаляет файл из временной таблицы, используется совместно с <a href="#clear_file_parts"><em>pgxls.get_file_parts_query</em></a>
+Процедура удаляет файл из временной таблицы, используется совместно с <a href="#clear_file_parts">pgxls.get_file_parts_query</a>
 <br>
 <br>
 Параметр:
@@ -829,7 +829,7 @@ a, a:link, a:active, a:visited {
 <p style="font-size:larger;"><b>pgxls.get_file_parts_query</b></p>
 <br>
 Функция формирует файл и возвращает SQL-запрос (тип varchar) для получения файла по частям.
-Используется при получении больших файлов, после вычитывания файла необходимо вызвать процедуру <a href="#clear_file_parts"><em>pgxls.clear_file_parts</em></a>
+Используется при получении больших файлов, после вычитывания файла необходимо вызвать процедуру <a href="#clear_file_parts">pgxls.clear_file_parts</a>
 <br>
 <br>
 Параметры:
@@ -952,7 +952,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 Процедура устанавливет значение ячейки, присваивает значение текущего столбца.
 <br>
 Используется при создании больших документов, т.к. не требуется проверка типа и изменение стиля.
-В остальных случая рекомендуется использовать <a href="#set_cell_value"><em>pgxls.set_cell_value</em></a>
+В остальных случая рекомендуется использовать <a href="#set_cell_value">pgxls.set_cell_value</a>
 <br>
 
 <br>
@@ -1191,7 +1191,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <p style="font-size:larger;"><b>pgxls.set_column_alignment_[type]</b></p>
 <br>
 Процедура устанавливет выравнивание значения в ячейках столбца в зависимости от типа данных.
-Если тип данных не указан (процедура <em>pgxls.set_column_alignment</em>), то выравнивание устанавливается для всех типов.
+Если тип данных не указан (процедура pgxls.set_column_alignment), то выравнивание устанавливается для всех типов.
 Выравнивание по горизонтали определяется типом <a href="#alignment_horizontal">pgxls.alignment_horizontal</a>,
 по вертикали - <a href="#alignment_vertical">pgxls.alignment_vertical</a>
 
@@ -1226,7 +1226,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <p style="font-size:larger;"><b>pgxls.set_column_border_[type]</b></p>
 <br>
 Процедура устанавливет границу ячеек столбца в зависимости от типа данных.
-Если тип данных не указан (процедура <em>pgxls.set_column_border</em>), то граница устанавливается для всех типов.
+Если тип данных не указан (процедура pgxls.set_column_border), то граница устанавливается для всех типов.
 Линия границы (внешний вид) определяется типом <a href="#border_line">pgxls.set_border_line</a>,
 для отмены границы используется линия 'none'
 <br>
@@ -1289,7 +1289,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <p style="font-size:larger;"><b>pgxls.set_column_fill_[type]</b></p>
 <br>
 Процедура устанавливет заливку ячеек столбца в зависимости от типа данных.
-Если тип данных не указан (процедура <em>pgxls.set_column_fill</em>), то заливка устанавливается для всех типов.
+Если тип данных не указан (процедура pgxls.set_column_fill), то заливка устанавливается для всех типов.
 Для отмены заливки параметру <em>foreground_color</em> необходимо передать значение 'none'
 <br>
 <br>
@@ -1321,7 +1321,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <p style="font-size:larger;"><b>pgxls.set_column_font_[type]</b></p>
 <br>
 Процедура устанавливет шрифт ячеек столбца в зависимости от типа данных.
-Если тип данных не указан (процедура <em>pgxls.set_column_font</em>), то шрифт устанавливается для всех типов.
+Если тип данных не указан (процедура pgxls.set_column_font), то шрифт устанавливается для всех типов.
 <br>
 <br>
 Параметры:

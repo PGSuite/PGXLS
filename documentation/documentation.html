@@ -655,7 +655,7 @@ Values: none,thin,thick,dashed,dotted,dashDot,dashDotDot,double
 <a id="clear_file_parts"></a>
 <p style="font-size:larger;"><b>pgxls.clear_file_parts</b></p>
 <br>
-Procedure removes file from temporary table, used together with <a href="#clear_file_parts"><em>pgxls.get_file_parts_query</em></a>
+Procedure removes file from temporary table, used together with <a href="#clear_file_parts">pgxls.get_file_parts_query</a>
 <br>
 <br>
 Parameter:
@@ -830,7 +830,7 @@ Example:<br>
 <p style="font-size:larger;"><b>pgxls.get_file_parts_query</b></p>
 <br>
 Function builds file and returns SQL query (varchar type) to get file in parts.
-Used for large files, after receiving  file, need to call procedure <a href="#clear_file_parts"><em>pgxls.clear_file_parts</em></a>
+Used for large files, after receiving  file, need to call procedure <a href="#clear_file_parts">pgxls.clear_file_parts</a>
 <br>
 <br>
 Parameters:
@@ -953,7 +953,7 @@ Function returns tool version
 Procedure sets cell value, assigns current column.
 <br>
 Used for large documents (no type checking and no style change)
-In other cases, recommended to use <a href="#set_cell_value"><em>pgxls.set_cell_value</em></a>
+In other cases, recommended to use <a href="#set_cell_value">pgxls.set_cell_value</a>
 <br>
 
 <br>
@@ -1192,7 +1192,7 @@ Examples:<br>
 <p style="font-size:larger;"><b>pgxls.set_column_alignment_[type]</b></p>
 <br>
 Procedure sets alignment of values in cells of column depending on data type.
-If data type not specified (procedure <em>pgxls.set_column_alignment</em>), then alignment set for all types.
+If data type not specified (procedure pgxls.set_column_alignment), then alignment set for all types.
 Horizontal alignment determined by type <a href="#alignment_horizontal">pgxls.alignment_horizontal</a>,
 vertical - <a href="#alignment_vertical">pgxls.alignment_vertical</a>
 
@@ -1228,7 +1228,7 @@ Examples:<br>
 <p style="font-size:larger;"><b>pgxls.set_column_border_[type]</b></p>
 <br>
 Procedure sets border cells of column depending on data type.
-If data type not specified (procedure <em>pgxls.set_column_border</em>), then border set for all types.
+If data type not specified (procedure pgxls.set_column_border), then border set for all types.
 Border line determined by type <a href="#border_line">pgxls.set_border_line</a>, to cancel border uses 'none'
 <br>
 <br>
@@ -1290,7 +1290,7 @@ Examples:<br>
 <p style="font-size:larger;"><b>pgxls.set_column_fill_[type]</b></p>
 <br>
 Procedure sets fill cells of column depending on data type.
-If data type not specified (procedure <em>pgxls.set_column_fill</em>), then fill set for all types.
+If data type not specified (procedure pgxls.set_column_fill), then fill set for all types.
 To cancel fill uses 'none' value for <em>foreground_color</em> parameter 
 <br>
 <br>
@@ -1322,7 +1322,7 @@ Examples:<br>
 <p style="font-size:larger;"><b>pgxls.set_column_font_[type]</b></p>
 <br>
 Procedure sets font cells of column depending on data type.
-If data type not specified (procedure <em>pgxls.set_column_font</em>), then font set for all types.
+If data type not specified (procedure pgxls.set_column_font), then font set for all types.
 <br>
 <br>
 Parameters:
