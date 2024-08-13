@@ -12,7 +12,7 @@ The installation consists in executing it in the psql terminal client or SQL man
 wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
 
-If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.  
+Optional. If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.  
 To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql) with the roles variable. For example:
 
 ```bash
@@ -20,7 +20,6 @@ wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql | psql -d [da
 ```
 
 [More info on site](https://pgxls.org/en/download/)
-&nbsp;  
 &nbsp;  
 
 ### Example #1 ###
@@ -72,7 +71,8 @@ Save file on command line
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
-[More examples on site](https://pgxls.org/en/#examples-full)
+More examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/example)
+&nbsp;  
 
 
 ### Basic procedures ###
@@ -85,7 +85,7 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
   
 *   **pgxls.get_file** - build and get file
 
-Documentation in [file documentation/documentation.html](https://htmlpreview.github.io/?https://github.com/PGXLS/PGXLS/blob/main/documentation/documentation.html)
+Documentation in file [documentation/documentation.html](https://htmlpreview.github.io/?https://github.com/PGXLS/PGXLS/blob/main/documentation/documentation.html)
 
 
 ### Important qualities ### 
@@ -97,3 +97,10 @@ Documentation in [file documentation/documentation.html](https://htmlpreview.git
 *   **Parallelism** - possible to create several files in parallel in one session
 
 ### Support ### 
+
+Of course you can create an issue, i will answer all requests.
+Also i will help to install and use the tool.
+
+WhatsApp: [PGSuite](https://wa.me/79361397626)
+email: [support\@pgsuite.org](mailto:support@pgsuite.org?subject=PGXLS)
+
