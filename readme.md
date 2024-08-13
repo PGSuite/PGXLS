@@ -19,8 +19,7 @@ To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS
 wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
 ```
 
-[More info on site](https://pgxls.org/en/download/)
-&nbsp;  
+More info on page [download](https://pgxls.org/en/download/)
 
 ### Example #1 ###
 
@@ -72,8 +71,6 @@ sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > 
 ```
 
 More examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/example)
-&nbsp;  
-
 
 ### Basic procedures ###
   
@@ -97,8 +94,6 @@ Documentation in file [documentation/documentation.html](https://htmlpreview.git
 *   **Parallelism** - possible to create several files in parallel in one session
 
 Overview on site [pgxls.org](https://pgxls.org/)
-&nbsp;  
-
 
 ### Support ### 
 
