@@ -96,8 +96,8 @@ Overview on site [pgxls.org](https://pgxls.org/)
 
 ### Support ### 
 
-Of course you can create an issue, i will answer all requests.  
-Also i will help to install and use the tool.  
+Of course you can create an issue, I will answer all requests.  
+Also I will help to install and use the tool.  
 Welcome to discussion !  
 
 WhatsApp: [PGSuite (+7-936-1397626)](https://wa.me/79361397626)  
