@@ -11,14 +11,13 @@ The installation consists in executing it in the psql terminal client or SQL man
 ```bash
 wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
+### Extension ###
 
-Optional. If the developers are not superusers, need to grant them privileges on the `pgxls` schema and its procedures.
-To do this, use the SQL script [pgxls_grants.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql) with the roles variable. For example:
+To install pgxls as an extension, unpack the pgxls_extension.tar(https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
 
 ```bash
-wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_grants.sql | psql -d [database] -v roles=[developers]
+wget -O - wget -O - https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
 ```
-
 More info on page [download](https://pgxls.org/en/download/)
 
 ### Example #1 ###
