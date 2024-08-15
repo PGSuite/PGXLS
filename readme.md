@@ -13,10 +13,10 @@ wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [data
 ```
 ### Extension ###
 
-To install pgxls as an extension, unpack the pgxls_extension.tar(https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
+To install `PGXLS` as an extension, unpack the [pgxls_extension.tar](https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
 
 ```bash
-wget -O - wget -O - https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
+wget -O - https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
 ```
 More info on page [download](https://pgxls.org/en/download/)
 
