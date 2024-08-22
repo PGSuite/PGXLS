@@ -5,18 +5,18 @@ Implemented dependence format on data type, conversion SQL query into sheet with
 
 ### Installation ###
 
-The installer is [pgxls_init.sql](https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql) file that creates `pgxls` schema with the necessary procedures.  
+The installer is [pgxls_init.sql](https://github.com/PGSuite/PGXLS/raw/main/pgxls_init.sql) file that creates `pgxls` schema with the necessary procedures.  
 The installation consists in executing it in the psql terminal client or SQL manager, for example:  
 
 ```bash
-wget -O - https://github.com/PGXLS/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
+wget -O - https://github.com/PGSuite/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
 ### Extension ###
 
 To install `PGXLS` as an extension, unpack the [pgxls_extension.tar](https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
 
 ```bash
-wget -O - https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
+wget -O - https://github.com/PGSuite/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
 ```
 More info on page [download](https://pgxls.org/en/download/)
 
@@ -69,7 +69,7 @@ Save file on command line
 sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
-All examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/example)
+All examples in directory [example](https://github.com/PGSuite/PGXLS/tree/main/example)
 
 ### Basic procedures ###
   
@@ -81,7 +81,10 @@ All examples in directory [example](https://github.com/PGXLS/PGXLS/tree/main/exa
   
 *   **pgxls.get_file** - build and get file
 
-Documentation in file [documentation/documentation.html](https://htmlpreview.github.io/?https://github.com/PGXLS/PGXLS/blob/main/documentation/documentation.html)
+*   **pgxls.get_file_by_query**	- create file by SQL query (wrapper)
+
+
+Documentation in file [documentation/documentation.html](https://htmlpreview.github.io/?https://github.com/PGSuite/PGXLS/blob/main/documentation/documentation.html)
 
 
 ### Important qualities ### 
