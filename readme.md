@@ -9,14 +9,14 @@ The installer is [pgxls_init.sql](https://github.com/PGSuite/PGXLS/raw/main/pgxl
 The installation consists in executing it in the psql terminal client or SQL manager, for example:  
 
 ```bash
-wget -O - https://github.com/PGSuite/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
+wget -O - -q https://github.com/PGSuite/PGXLS/raw/main/pgxls_init.sql | psql -d [database]
 ```
 ### Extension ###
 
-To install `PGXLS` as an extension, unpack the [pgxls_extension.tar](https://github.com/PGXLS/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
+To install `PGXLS` as an extension, unpack the [pgxls_extension.tar](https://github.com/PGSuite/PGXLS/raw/main/extension/pgxls_extension.tar) archive into the [sharedir]/extension directory of the postgres installation, for example (run as root):
 
 ```bash
-wget -O - https://github.com/PGSuite/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
+wget -O - -q https://github.com/PGSuite/PGXLS/raw/main/extension/pgxls_extension.tar | tar x -C `su - postgres -c "pg_config --sharedir"`/extension
 ```
 More info on page [download](https://pgxls.org/en/download/)
 
@@ -29,7 +29,7 @@ select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg
 
 Save file on command line  
 ```bash
-psql -Aqt -c "select encode(pgxls.get_file_by_query('select * from pg_class'),'hex')" | xxd -r -ps > pg_class.xlsx
+psql -Aqt -c "select pgxls.get_file_by_query('select * from pg_class')" | xxd -r -ps > pg_class.xlsx
 ```
 
 ### Example #2 ###
@@ -66,7 +66,7 @@ select excel_top_relations_by_size();
 
 Save file on command line
 ```bash
-sql -Aqt -c "select encode(excel_top_relations_by_size(),'hex')" | xxd -r -ps > top_relations_by_size.xlsx
+sql -Aqt -c "select excel_top_relations_by_size()" | xxd -r -ps > top_relations_by_size.xlsx
 ```
 
 All examples in directory [example](https://github.com/PGSuite/PGXLS/tree/main/example)
@@ -95,7 +95,7 @@ Documentation in file [documentation/documentation.html](https://htmlpreview.git
 *   **Styles** - for columns and cells, support format, font, border, fill and alignment
 *   **Parallelism** - possible to create several files in parallel in one session
 
-Overview on site [pgxls.org](https://pgxls.org/)
+Overview on site [pgxls.org](https://pgxls.org/en/)
 
 ### Support ### 
 
