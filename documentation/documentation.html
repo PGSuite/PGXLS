@@ -452,6 +452,7 @@ a, a:link, a:active, a:visited {
 <li><a href="#get_format_code_boolean">get_format_code_boolean</a></li>
 <li><a href="#get_format_code_numeric">get_format_code_numeric</a></li>
 
+<li><a href="#merge_cells">merge_cells</a></li>
 <li><a href="#next_column">next_column</a></li>
 <li><a href="#pgxls_version">pgxls_version</a></li>
 
@@ -900,6 +901,37 @@ Examples:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 70px;">
 <pre>format1 := pgxls.get_format_code_numeric(3);
 format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separated=&#62;<span class="color-source-sql-keyword">true</span>);
+</pre>
+</div>
+
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="merge_cells"></a>
+<p style="font-size:larger;"><b>pgxls.merge_cells</b></p>
+<br>
+Procedure merges cells
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_count int</td><td style="text-align: center; width: 30px;">-</td><td>column count (optional, default 1)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">row_count int</td><td style="text-align: center; width: 30px;">-</td><td>row count (optional, default 1)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column from which the merge begins (optional, default current)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 90px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.merge_cells(xls, 5);
+<span class="color-source-sql-keyword">call</span> pgxls.merge_cells(xls, row_count=&#62;5);
+<span class="color-source-sql-keyword">call</span> pgxls.merge_cells(xls, 4, 4, 6);
 </pre>
 </div>
 

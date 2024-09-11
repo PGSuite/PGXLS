@@ -33,8 +33,19 @@ begin
     call pgxls.set_cell_value(xls, x/3.0);
     call pgxls.set_cell_value(xls, md5(x::text));
   end loop;
-    -- Add sheet by query
+   -- Add sheet by query
   call pgxls.add_sheet_by_query(xls, 'select * from pg_class order by 1 limit 10', 'Query');
+  -- Add sheet with merged cells
+  call pgxls.add_sheet(xls, array_fill(10, array[10]), null, 'Merge');
+  for row in 1..10 loop
+    call pgxls.add_row(xls);
+    for col in 1..10 loop      
+      call pgxls.set_cell_value(xls, row||','||col);
+      if row=2 and col=2 then call pgxls.merge_cells(xls, 5/*column_count*/); call pgxls.set_cell_fill(xls, pgxls.color$light_red());   end if;
+      if row=4 and col=4 then call pgxls.merge_cells(xls, row_count=>5);      call pgxls.set_cell_fill(xls, pgxls.color$light_green()); end if;
+    end loop;    
+    if row=6 then call pgxls.merge_cells(xls, 4, 4, 6); call pgxls.set_cell_fill(xls, pgxls.color$light_blue(), 6); end if;
+  end loop;   
   -- Return file  
   return pgxls.get_file(xls);      
 end
