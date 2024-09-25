@@ -92,7 +92,8 @@ Documentation in file [documentation/documentation.html](https://htmlpreview.git
 *   **Large files** - data row by row inserted into temporary table, which not requires memory. Separate function is implemented to get large file
 *   **Auto-format** - for each column, format is configured depending on data type
 *   **SQL queries** - it is possible to add sheet with the results of SQL query
-*   **Styles** - for columns and cells, support format, font, border, fill and alignment
+*   **Styles**      - for columns and cells, support format, font, border, fill and alignment
+*   **Print setup** - for each sheet, the paper format and orientation, title, repeating rows (table header) and margins are specified
 *   **Parallelism** - possible to create several files in parallel in one session
 
 Overview on site [pgxls.org](https://pgxls.org/en/)

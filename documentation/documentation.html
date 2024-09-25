@@ -445,6 +445,7 @@ a, a:link, a:active, a:visited {
 
 <li><a href="#font_name_by_family">font_name$[family]</a></li>
 
+<li><a href="#get_cell_height">get_cell_height</a></li>
 <li><a href="#get_column_name">get_column_name</a></li>
 <li><a href="#get_file">get_file</a></li>
 <li><a href="#get_file_by_query">get_file_by_query</a></li>
@@ -453,7 +454,12 @@ a, a:link, a:active, a:visited {
 <li><a href="#get_format_code_numeric">get_format_code_numeric</a></li>
 
 <li><a href="#merge_cells">merge_cells</a></li>
+
 <li><a href="#next_column">next_column</a></li>
+
+<li><a href="#page_paper_format">page_paper_format</a></li>
+<li><a href="#page_orientation">page_orientation</a></li>
+
 <li><a href="#pgxls_version">pgxls_version</a></li>
 
 <li><a href="#set_cell_type">set_cell_[type]</a></li>
@@ -470,6 +476,11 @@ a, a:link, a:active, a:visited {
 <li><a href="#set_column_fill_type">set_column_fill_[type]</a></li>
 <li><a href="#set_column_font_type">set_column_font_[type]</a></li>
 <li><a href="#set_column_format_type">set_column_format_[type]</a></li>
+
+<li><a href="#set_page_paper">set_page_paper</a></li>
+<li><a href="#set_page_header">set_page_header</a></li>
+<li><a href="#set_page_margins">set_page_margins</a></li>
+<li><a href="#set_page_rows_repeat">set_page_rows_repeat</a></li>
 
 <li><a href="#set_row_height">set_row_height</a></li>
 
@@ -512,6 +523,14 @@ Procedures <a href="#set_column_current">pgxls.set_column_current</a> and <a hre
 When adding row or sheet, current row written to temporary table and cannot be changed.
 Row height calculated automatically, but can be set manually using procedure
 <a href="#set_row_height">pgxls.set_row_height</a>.
+<br>
+<br>
+Print setup sets the paper size and orientation, header, repeating rows, margins
+using procedures
+<a href="#set_page_paper">pgxls.set_page_paper</a>,
+<a href="#set_page_header">pgxls.set_page_header</a>,
+<a href="#set_page_rows_repeat">pgxls.set_page_rows_repeat</a>,
+<a href="#set_page_margins">pgxls.set_page_margins</a>.
 <br>
 <br>
 When creating large files, must use procedures <a href="#set_cell_type">pgxls.set_cell_[type]</a> for sets cells
@@ -753,6 +772,32 @@ Examples:<br>
 
 
 
+<a id="get_cell_height"></a>
+<p style="font-size:larger;"><b>pgxls.get_cell_height</b></p>
+<br>
+Function returns the cell height, usually used when specifying the row height when vertically merging cells
+<br>
+
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">line_count int</td><td style="text-align: center; width: 30px;">-</td><td>line count (optional, default 1)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size int</td><td style="text-align: center; width: 30px;">-</td><td>font size (optional)</td></tr>
+</table>
+
+
+<br>
+Example:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, pgxls.get_cell_height());
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
 <a id="get_column_name"></a>
 <p style="font-size:larger;"><b>pgxls.get_column_name</b></p>
 <br>
@@ -767,7 +812,7 @@ Parameters:
 
 
 <br>
-Examples:<br>
+Example:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 50px;">
 <pre>column_name := pgxls.get_column_name(5);
 </pre>
@@ -967,6 +1012,34 @@ Example:<br>
 
 
 
+<br>
+<a id="page_paper_format"></a>
+<p style="font-size:larger;"><b>pgxls.page_paper_format</b></p>
+<br>
+Enum type, defines paper format
+<br>
+Values: A3,A4,A5
+<br>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<br>
+<a id="page_orientation"></a>
+<p style="font-size:larger;"><b>pgxls.page_orientation</b></p>
+<br>
+Enum type, defines page orientation
+<br>
+Values: portrait,landscape
+<br>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
 <a id="pgxls_version"></a>
 <p style="font-size:larger;"><b>pgxls.pgxls_version</b>()</p>
 <br>
@@ -1022,19 +1095,20 @@ Procedure sets alignment of value in cell
 Parameters:
 <table>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>column (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>indent (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>vertical alignment (optional)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>indent</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_wrap boolean</td><td style="text-align: center; width: 30px;">-</td><td>wrap text (optional)</td></tr>
 </table>
 
 
 <br>
 Examples:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 90px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>, column_=&#62;1);
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, <span class="color-source-sql-string">'center'</span>, 0, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-keyword">false</span>, 1);
 <span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
-<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2, text_wrap=&#62;<span class="color-source-sql-keyword">true</span>);
 </pre>
 </div>
 
@@ -1199,8 +1273,9 @@ Parameters:
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border_bottom pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>border bottom (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>fill color in format &#39;RRGGBB&#39; (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_indent int</td><td style="text-align: center; width: 30px;">-</td><td>alignment indent (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_indent int</td><td style="text-align: center; width: 30px;">-</td><td>indent on alignment (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>vertical alignment (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_text_wrap boolean</td><td style="text-align: center; width: 30px;">-</td><td>wrap text on alignment (optional)</td></tr>
 </table>
 
 
@@ -1244,9 +1319,9 @@ Parameters:
 <br>
 Examples:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 90px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment(xls, 1, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>);
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment(xls, 1, <span class="color-source-sql-string">'center'</span>, 3, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-keyword">true</span>);
 <span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_integer(xls, 2, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
-<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_text(xls, 3, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_text(xls, 3, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2, text_wrap=&#62;<span class="color-source-sql-keyword">true</span>);
 </pre>
 </div>
 
@@ -1425,6 +1500,117 @@ Examples:<br>
 
 
 
+<a id="set_page_paper"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_paper</b></p>
+<br>
+Procedure sets paper parameters: format and orientation
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">format pgxls.page_paper_format</td><td style="text-align: center; width: 30px;">-</td><td>format (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">orientation pgxls.page_orientation</td><td style="text-align: center; width: 30px;">-</td><td>orientation (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_paper(xls, <span class="color-source-sql-string">'A3'</span>, <span class="color-source-sql-string">'portrait'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_paper(xls, orientation=&#62;<span class="color-source-sql-string">'landscape'</span>); 
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_header"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_header</b></p>
+<br>
+Procedure sets page header
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">header text</td><td style="text-align: center; width: 30px;">-</td><td>header text, null value removes header</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal position: left,center,right (optional, default right)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>font_name (optional, default Arial)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size int</td><td style="text-align: center; width: 30px;">-</td><td>font size (optional, default 6)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_header(xls, <span class="color-source-sql-string">'MyReport, page &P of &N'</span>, alignment=&#62;<span class="color-source-sql-string">'center'</span>, font_size=&#62;12);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_header(xls, <span class="color-source-sql-keyword">null</span>); 
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_margins"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_margins</b></p>
+<br>
+Procedure sets page margins
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">left_ numeric</td><td style="text-align: center; width: 30px;">-</td><td>left margin (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">top numeric</td><td style="text-align: center; width: 30px;">-</td><td>top margin (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">right_ numeric</td><td style="text-align: center; width: 30px;">-</td><td>right margin (optional)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bottom numeric</td><td style="text-align: center; width: 30px;">-</td><td>bottom margin (optional)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_margins(xls, 0.15, 0.2, 0.15, 0.4);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_margins(xls, bottom=&#62;2); 
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_rows_repeat"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_rows_repeat</b></p>
+<br>
+Procedure sets rows that are repeated on each page
+<br>
+<br>
+Parameters:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">row_from int</td><td style="text-align: center; width: 30px;">-</td><td>starting row number, null value disables repeating</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">row_to int</td><td style="text-align: center; width: 30px;">-</td><td>ending row number (optional, default row_from)</td></tr>
+</table>
+
+
+<br>
+Examples:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_rows_repeat(xls, 1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_rows_repeat(xls, 3, 5); 
+</pre>
+</div>
+
+
+
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
 
@@ -1444,7 +1630,7 @@ Parameters:
 
 
 <br>
-Examples:<br>
+Example:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 50px;">
 <pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, 20);
 </pre>

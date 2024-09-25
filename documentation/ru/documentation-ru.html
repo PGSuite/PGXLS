@@ -445,6 +445,7 @@ a, a:link, a:active, a:visited {
 
 <li><a href="#font_name_by_family">font_name$[family]</a></li>
 
+<li><a href="#get_cell_height">get_cell_height</a></li>
 <li><a href="#get_column_name">get_column_name</a></li>
 <li><a href="#get_file">get_file</a></li>
 <li><a href="#get_file_by_query">get_file_by_query</a></li>
@@ -453,7 +454,12 @@ a, a:link, a:active, a:visited {
 <li><a href="#get_format_code_numeric">get_format_code_numeric</a></li>
 
 <li><a href="#merge_cells">merge_cells</a></li>
+
 <li><a href="#next_column">next_column</a></li>
+
+<li><a href="#page_paper_format">page_paper_format</a></li>
+<li><a href="#page_orientation">page_orientation</a></li>
+
 <li><a href="#pgxls_version">pgxls_version</a></li>
 
 <li><a href="#set_cell_type">set_cell_[type]</a></li>
@@ -470,6 +476,11 @@ a, a:link, a:active, a:visited {
 <li><a href="#set_column_fill_type">set_column_fill_[type]</a></li>
 <li><a href="#set_column_font_type">set_column_font_[type]</a></li>
 <li><a href="#set_column_format_type">set_column_format_[type]</a></li>
+
+<li><a href="#set_page_paper">set_page_paper</a></li>
+<li><a href="#set_page_header">set_page_header</a></li>
+<li><a href="#set_page_margins">set_page_margins</a></li>
+<li><a href="#set_page_rows_repeat">set_page_rows_repeat</a></li>
 
 <li><a href="#set_row_height">set_row_height</a></li>
 
@@ -511,6 +522,15 @@ a, a:link, a:active, a:visited {
 При добавлении строки или листа текущая строка записывается во временную таблицу в виде подготовленной части файла
 и не может быть изменена.
 Высота строки вычисляется автоматически, но может быть установлена вручную процедурой <a href="#set_row_height">pgxls.set_row_height</a>.
+<br>
+<br>
+Настройка печати для каждого листа позволяет установить формат и ориентацию бумаги, заголовок, повторяющиеся строки ("шапку" таблицы) и отступы.
+Выполняется процедурами 
+<a href="#set_page_paper">pgxls.set_page_paper</a>,
+<a href="#set_page_header">pgxls.set_page_header</a>,
+<a href="#set_page_rows_repeat">pgxls.set_page_rows_repeat</a> и 
+<a href="#set_page_margins">pgxls.set_page_margins</a>
+соответственно.
 <br>
 <br>
 При создании больших файлов для заполнения ячеек необходимо использовать процедуры <a href="#set_cell_type">pgxls.set_cell_[type]</a>
@@ -751,6 +771,32 @@ a, a:link, a:active, a:visited {
 
 
 
+<a id="get_cell_height"></a>
+<p style="font-size:larger;"><b>pgxls.get_cell_height</b></p>
+<br>
+Функция возвращает высоту ячейки, обычно используется при явном указании высоты строки при вертикальном объединении ячеек
+<br>
+
+<br>
+Параметры:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">line_count int</td><td style="text-align: center; width: 30px;">-</td><td>кол-во строк (необязательный, по умолчанию 1)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size int</td><td style="text-align: center; width: 30px;">-</td><td>размер шрифта (необязательный)</td></tr>
+</table>
+
+
+<br>
+Примеры вызова:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 50px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, pgxls.get_cell_height());
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
 <a id="get_column_name"></a>
 <p style="font-size:larger;"><b>pgxls.get_column_name</b></p>
 <br>
@@ -965,6 +1011,34 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 
+<br>
+<a id="page_paper_format"></a>
+<p style="font-size:larger;"><b>pgxls.page_paper_format</b></p>
+<br>
+Тип enum, определяет формат бумаги
+<br>
+Значения: A3,A4,A5
+<br>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<br>
+<a id="page_orientation"></a>
+<p style="font-size:larger;"><b>pgxls.page_orientation</b></p>
+<br>
+Тип enum, определяет ориентацию страницы
+<br>
+Значения: portrait,landscape
+<br>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
 <a id="pgxls_version"></a>
 <p style="font-size:larger;"><b>pgxls.pgxls_version</b>()</p>
 <br>
@@ -1020,19 +1094,20 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 Параметры:
 <table>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>столбец</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>столбец (необязательный)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>отступ (необязательный)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>отступ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_wrap boolean</td><td style="text-align: center; width: 30px;">-</td><td>перенос текста (необязательный)</td></tr>
 </table>
 
 
 <br>
 Примеры вызова:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 90px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>, column_=&#62;1);
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, <span class="color-source-sql-string">'center'</span>, 0, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-keyword">false</span>, 1);
 <span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
-<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+<span class="color-source-sql-keyword">call</span> pgxls.set_cell_alignment(xls, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2, text_wrap=&#62;<span class="color-source-sql-keyword">true</span>);
 </pre>
 </div>
 
@@ -1198,7 +1273,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет заливки в формате &#39;RRGGBB&#39; (необязательный)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_indent int</td><td style="text-align: center; width: 30px;">-</td><td>отступ при выравнивании (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)alignment_text_wrap boolean</td></tr>
 </table>
 
 
@@ -1234,16 +1309,18 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_ int</td><td style="text-align: center; width: 30px;">-</td><td>столбец</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">horizontal pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>отступvertical pgxls.alignment_vertical</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">indent int</td><td style="text-align: center; width: 30px;">-</td><td>отступ (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">vertical pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">text_wrap boolean</td><td style="text-align: center; width: 30px;">-</td><td>перенос текста (необязательный)</td></tr>
 </table>
 
 
 <br>
 Примеры вызова:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 90px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment(xls, 1, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-string">'center'</span>);
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment(xls, 1, <span class="color-source-sql-string">'center'</span>, 3, <span class="color-source-sql-string">'center'</span>, <span class="color-source-sql-keyword">true</span>);
 <span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_integer(xls, 2, vertical=&#62;<span class="color-source-sql-string">'top'</span>);
-<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_text(xls, 3, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2);
+<span class="color-source-sql-keyword">call</span> pgxls.set_column_alignment_text(xls, 3, horizontal=&#62;<span class="color-source-sql-string">'justify'</span>, indent=&#62;2, text_wrap=&#62;<span class="color-source-sql-keyword">true</span>);
 </pre>
 </div>
 
@@ -1422,6 +1499,116 @@ pgxls.set_column_format_boolean(inout xls pgxls.xls, column_ int, text_true varc
 
 
 
+<a id="set_page_paper"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_paper</b></p>
+<br>
+Процедура устанавливет параметры бумаги: формат и ориентацию
+<br>
+<br>
+Параметры:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">format pgxls.page_paper_format</td><td style="text-align: center; width: 30px;">-</td><td>формат (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">orientation pgxls.page_orientation</td><td style="text-align: center; width: 30px;">-</td><td>ориентация (необязательный)</td></tr>
+</table>
+
+
+<br>
+Примеры вызова:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_paper(xls, <span class="color-source-sql-string">'A3'</span>, <span class="color-source-sql-string">'portrait'</span>);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_paper(xls, orientation=&#62;<span class="color-source-sql-string">'landscape'</span>); 
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_header"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_header</b></p>
+<br>
+Процедура устанавливет заголовок страницы
+<br>
+<br>
+Параметры:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">header text</td><td style="text-align: center; width: 30px;">-</td><td>текст заголовка, значение null удаляет заголовок</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>расположение по горизонтали: left,center,right (необязательный, по умолчанию right)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_name varchar</td><td style="text-align: center; width: 30px;">-</td><td>имя шрифта (необязательный, по умолчанию Arial)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size int</td><td style="text-align: center; width: 30px;">-</td><td>размер шрифта (необязательный, по умолчанию 6)</td></tr>
+</table>
+
+
+<br>
+Примеры вызова:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_header(xls, <span class="color-source-sql-string">'MyReport, page &P of &N'</span>, alignment=&#62;<span class="color-source-sql-string">'center'</span>, font_size=&#62;12);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_header(xls, <span class="color-source-sql-keyword">null</span>); 
+</pre>
+</div>
+
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_margins"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_margins</b></p>
+<br>
+Процедура устанавливет отступы страницы
+<br>
+<br>
+Параметры:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">left_ numeric</td><td style="text-align: center; width: 30px;">-</td><td>отступ слева (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">top numeric</td><td style="text-align: center; width: 30px;">-</td><td>отступ сверху (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">right_ numeric</td><td style="text-align: center; width: 30px;">-</td><td>отступ справа (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">bottom numeric</td><td style="text-align: center; width: 30px;">-</td><td>отступ снизу (необязательный)</td></tr>
+</table>
+
+
+<br>
+Примеры вызова:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_margins(xls, 0.15, 0.2, 0.15, 0.4);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_margins(xls, bottom=&#62;2); 
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+
+<a id="set_page_rows_repeat"></a>
+<p style="font-size:larger;"><b>pgxls.set_page_rows_repeat</b></p>
+<br>
+Процедура устанавливет строки, повторяющиеся на каждой странице
+<br>
+<br>
+Параметры:
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">row_from int</td><td style="text-align: center; width: 30px;">-</td><td>номер начальной строки, значение null отменяет повторение строк</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">row_to int</td><td style="text-align: center; width: 30px;">-</td><td>номер конечной строки (необязательный, по умолчанию row_from)</td></tr>
+</table>
+
+
+<br>
+Примеры вызова:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 70px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_page_rows_repeat(xls, 1);
+<span class="color-source-sql-keyword">call</span> pgxls.set_page_rows_repeat(xls, 3, 5); 
+</pre>
+</div>
+
+
+
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
 
@@ -1436,12 +1623,12 @@ pgxls.set_column_format_boolean(inout xls pgxls.xls, column_ int, text_true varc
 Параметры:
 <table>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">height</td><td style="text-align: center; width: 30px;">-</td><td>высота</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">height int</td><td style="text-align: center; width: 30px;">-</td><td>высота</td></tr>
 </table>
 
 
 <br>
-Примеры вызова:<br>
+Пример вызова:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 50px;">
 <pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, 20);
 </pre>

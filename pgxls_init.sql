@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.3.9'; -- 2024.09.07 12:55:33
+  return '24.3.11'; -- 2024.09.25 18:56:43
 end; $$;
 
 do $$ begin
@@ -14,6 +14,12 @@ do $$ begin
   end if;
   if to_regtype('pgxls.border_line') is null then
     create type pgxls.border_line as enum ('none', 'thin', 'thick', 'dashed', 'dotted', 'dashDot', 'dashDotDot', 'double');
+  end if;
+  if to_regtype('pgxls.page_paper_format') is null then
+    create type pgxls.page_paper_format as enum ('A3','A4','A5');
+  end if;
+  if to_regtype('pgxls.page_orientation') is null then
+    create type pgxls.page_orientation as enum ('portrait','landscape');
   end if;   
   --
   if to_regtype('pgxls._format') is null then
@@ -57,7 +63,8 @@ do $$ begin
       fill int,
       alignment_horizontal pgxls.alignment_horizontal,
       alignment_indent int,      
-      alignment_vertical pgxls.alignment_vertical
+      alignment_vertical pgxls.alignment_vertical,
+      alignment_text_wrap boolean
     );  
   end if;
   --
@@ -77,6 +84,23 @@ do $$ begin
     );  
   end if;
   --
+  if to_regtype('pgxls._page') is null then
+    create type pgxls._page as (
+      header_alignment pgxls.alignment_horizontal,
+      header_font_name varchar,
+      header_font_size int,
+      header_text text,
+      margin_left numeric(10,3),
+      margin_top numeric(10,3),
+      margin_right numeric(10,3),
+      margin_bottom numeric(10,3),
+      rows_repeat_from int,
+      rows_repeat_to int,
+      paper_format pgxls.page_paper_format,
+      paper_orientation pgxls.page_orientation
+    );  
+  end if;
+  --
   if to_regtype('pgxls.xls') is null then
     create type pgxls.xls as (
       id int,      
@@ -87,6 +111,7 @@ do $$ begin
       borders pgxls._border[],
       fills pgxls._fill[],
       styles pgxls._style[],
+      page pgxls._page,
       --      
       columns pgxls._column[],
       columns_len int,
@@ -173,11 +198,12 @@ begin
   v_border.left_ := 'none'; v_border.top := 'none'; v_border.right_ := 'none'; v_border.bottom := 'none';
   xls.borders[0] := v_border;
   --
-  v_style.font := 0;
-  v_style.border := 0;
-  v_style.fill := 0;
-  v_style.alignment_indent := 0;
-  v_style.alignment_vertical := 'center';
+  v_style.font                := 0;
+  v_style.border              := 0;
+  v_style.fill                := 0;
+  v_style.alignment_indent    := 0;
+  v_style.alignment_vertical  := 'center';
+  v_style.alignment_text_wrap := false;
   --
   v_format.code := 'General';             xls.formats[100] := v_format; v_style.format := 100; v_style.alignment_horizontal := 'left';   xls.styles[0] := v_style; 
   v_format.code := '@';                   xls.formats[101] := v_format; v_style.format := 101; v_style.alignment_horizontal := 'left';   xls.styles[1] := v_style; -- text
@@ -247,6 +273,10 @@ begin
     end loop;
     call pgxls._build_file$xl_worksheets_sheet_row(xls);   
   end if; 
+  call pgxls.set_page_header(xls, 'PGSuite '||to_char(xls.datetime,'YYYY-MM-DD HH24:MI')||' &P#&N');
+  call pgxls.set_page_margins(xls, 0.15, 0.2, 0.15, 0.4);
+  call pgxls.set_page_rows_repeat(xls, case when columns_captions is not null then 1 else null end);
+  call pgxls.set_page_paper(xls, 'A4', 'portrait');
 end
 $$;
 
@@ -341,6 +371,9 @@ $$;
 
 create or replace procedure pgxls._next_column_default(inout xls pgxls.xls, column_ int) language plpgsql as $$
 begin
+  if xls.cells is null then
+    call pgxls.add_row(xls);
+  end if;
   if column_ is not null then
     xls.column_current := column_; 
   else 
@@ -355,7 +388,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls._add_style(inout xls pgxls.xls, inout style int, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null) language plpgsql as $$
+create or replace procedure pgxls._add_style(inout xls pgxls.xls, inout style int, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null) language plpgsql as $$
 declare
   v_styles_len int := array_length(xls.styles,1);
   v_style pgxls._style := xls.styles[style]; 
@@ -367,6 +400,7 @@ begin
   if alignment_horizontal is not null then v_style.alignment_horizontal := alignment_horizontal; end if;
   if alignment_indent     is not null then v_style.alignment_indent     := alignment_indent;     end if;
   if alignment_vertical   is not null then v_style.alignment_vertical   := alignment_vertical;   end if;
+  if alignment_text_wrap  is not null then v_style.alignment_text_wrap  := alignment_text_wrap;  end if; 
   for s in 0..v_styles_len-1 loop
     if 
       xls.styles[s].format               = v_style.format               and
@@ -375,7 +409,8 @@ begin
       xls.styles[s].fill                 = v_style.fill                 and
       xls.styles[s].alignment_horizontal = v_style.alignment_horizontal and  
       xls.styles[s].alignment_indent     = v_style.alignment_indent     and      
-      xls.styles[s].alignment_vertical   = v_style.alignment_vertical   
+      xls.styles[s].alignment_vertical   = v_style.alignment_vertical   and
+      xls.styles[s].alignment_text_wrap  = v_style.alignment_text_wrap      
     then
       style := s;
       return;
@@ -477,12 +512,12 @@ begin
 end
 $$;
 
-create or replace procedure pgxls._set_column_style(inout xls pgxls.xls, column_ int, cell_type int, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null) language plpgsql as $$
+create or replace procedure pgxls._set_column_style(inout xls pgxls.xls, column_ int, cell_type int, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null) language plpgsql as $$
 declare
   v_column pgxls._column := xls.columns[column_];
   v_style int := xls.columns[column_].styles[cell_type];
 begin
-  call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical);
+  call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
   v_column.styles[cell_type] := v_style;
   xls.columns[column_] := v_column;
 end
@@ -580,12 +615,12 @@ begin
       '$$;';
     v_sql_fill := v_sql_fill||'  call pgxls.set_column_fill_'||v_type.name||'(xls, column_, foreground_color);'||v_newline;
     execute 
-      'create or replace procedure pgxls.set_column_alignment_'||v_type.name||'(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null) language plpgsql as $$'||v_newline||
+      'create or replace procedure pgxls.set_column_alignment_'||v_type.name||'(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null) language plpgsql as $$'||v_newline||
       'begin'||v_newline||
-      '  call pgxls._set_column_style(xls, column_, '||v_type.position||', alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical);'||v_newline|| 	
+      '  call pgxls._set_column_style(xls, column_, '||v_type.position||', alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical, alignment_text_wrap => text_wrap);'||v_newline|| 	
       'end'||v_newline||
       '$$;';
-    v_sql_alignment := v_sql_alignment||'  call pgxls.set_column_alignment_'||v_type.name||'(xls, column_, horizontal, indent, vertical);'||v_newline;    
+    v_sql_alignment := v_sql_alignment||'  call pgxls.set_column_alignment_'||v_type.name||'(xls, column_, horizontal, indent, vertical, text_wrap);'||v_newline;    
   end loop;
   execute   
     'create or replace procedure pgxls.set_column_font(inout xls pgxls.xls, column_ int, name varchar default null, size int default null, bold boolean default null, italic boolean default null, underline boolean default null, strike boolean default null, color varchar(6) default null) language plpgsql as $$'||v_newline||
@@ -606,7 +641,7 @@ begin
     'end'||v_newline||
     '$$;';
   execute   
-    'create or replace procedure pgxls.set_column_alignment(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null) language plpgsql as $$'||v_newline||
+    'create or replace procedure pgxls.set_column_alignment(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null) language plpgsql as $$'||v_newline||
     'begin'||v_newline||
     v_sql_alignment||	
     'end'||v_newline||
@@ -614,7 +649,7 @@ begin
 end
 $body$;
 
-create or replace procedure pgxls._set_cell_style(inout xls pgxls.xls, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls._set_cell_style(inout xls pgxls.xls, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null, column_ int default null) language plpgsql as $$
 declare 
   v_column int := coalesce(column_, xls.column_current); 
   v_style int;
@@ -628,7 +663,7 @@ begin
     raise exception 'Cell for column % not assigned, initially need to call pgxls.set_cell_value', v_column;  
   end if;
   v_style := v_cell.style;
-  call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical);
+  call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
   v_cell.style := v_style;
   xls.cells[v_column] := v_cell;
 end
@@ -670,9 +705,9 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_alignment(inout xls pgxls.xls, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.set_cell_alignment(inout xls pgxls.xls, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null, column_ int default null) language plpgsql as $$
 begin
-  call pgxls._set_cell_style(xls, alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical, column_=>column_); 	
+  call pgxls._set_cell_style(xls, alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical, alignment_text_wrap => text_wrap, column_=>column_); 	
 end
 $$;
 
@@ -690,12 +725,7 @@ begin
   call pgxls._next_column_default(xls, column_);
   v_cell.type := 's';
   v_cell.style := xls.columns[xls.column_current].styles[1];
-  if value is not null then
-    v_cell.value := xls.strings_len;
-    call pgxls._build_file$xl_shared_strings_add(xls, value);
-  else 
-    v_cell.value := '';
-  end if;
+  v_cell.value := coalesce(value,'');
   xls.cells[xls.column_current] := v_cell;
 end
 $$;
@@ -780,16 +810,13 @@ create or replace procedure pgxls.set_cell_value(
   font_name varchar default null, font_size int default null, font_bold boolean default null, font_italic boolean default null, font_underline boolean default null, font_strike boolean default null, font_color varchar(6) default null,
   border_around pgxls.border_line default null, border_left pgxls.border_line default null, border_top pgxls.border_line default null, border_right pgxls.border_line default null, border_bottom pgxls.border_line default null,
   fill_foreground_color varchar(6) default null, 
-  alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null  
+  alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
 ) language plpgsql as $$
 declare 
   v_column int; 
   v_cell pgxls._cell;
   v_value_type regtype := pg_typeof(value);
 begin
-  if xls.cells is null then
-    call pgxls.add_row(xls);
-  end if;
   call pgxls._next_column_default(xls, column_);
   if xls.column_current<1 or xls.column_current>xls.columns_len then 	
   	raise exception 'Column % out of range [1,%]', xls.column_current, xls.columns_len;
@@ -800,8 +827,7 @@ begin
   elseif pgxls._type_is_time     (v_value_type) then call pgxls.set_cell_time      (xls, value::time,      xls.column_current);
   elseif pgxls._type_is_timestamp(v_value_type) then call pgxls.set_cell_timestamp (xls, value::timestamp, xls.column_current);
   elseif pgxls._type_is_boolean  (v_value_type) then call pgxls.set_cell_boolean   (xls, value::boolean,   xls.column_current);  
-  else 
-    call pgxls.set_cell_text(xls, value::text, xls.column_current);  
+  else                                               call pgxls.set_cell_text      (xls, value::text,      xls.column_current);  
   end if; 
   if format_code is not null then
     call pgxls.set_cell_format(xls, column_=>xls.column_current, code=>format_code);
@@ -815,8 +841,8 @@ begin
   if fill_foreground_color is not null then
     call pgxls.set_cell_fill(xls, column_=>xls.column_current, foreground_color=>fill_foreground_color);
   end if; 
-  if alignment_horizontal is not null or alignment_indent is not null or alignment_vertical is not null then
-    call pgxls.set_cell_alignment(xls, column_=>xls.column_current, horizontal=>alignment_horizontal, indent=>alignment_indent, vertical=>alignment_vertical);
+  if alignment_horizontal is not null or alignment_indent is not null or alignment_vertical is not null or alignment_text_wrap is not null then
+    call pgxls.set_cell_alignment(xls, column_=>xls.column_current, horizontal=>alignment_horizontal, indent=>alignment_indent, vertical=>alignment_vertical, text_wrap=>alignment_text_wrap);
   end if;
 end
 $$;
@@ -835,6 +861,54 @@ begin
   xls.row_height := height;
 end
 $$;
+
+create or replace function pgxls.get_cell_height(line_count int default 1, font_size int default 10) returns int language plpgsql as $$
+begin
+  return 1+font_size*1.3*line_count;
+end
+$$;
+
+create or replace procedure pgxls.set_page_header(inout xls pgxls.xls, header text, alignment pgxls.alignment_horizontal default 'right', font_name varchar default pgxls.font_name$sans(), font_size int default 6) language plpgsql as $$
+begin
+  xls.page.header_alignment := alignment;
+  xls.page.header_font_name := font_name;
+  xls.page.header_font_size := font_size;
+  xls.page.header_text      := header;  
+end
+$$;
+
+create or replace procedure pgxls.set_page_margins(inout xls pgxls.xls, left_ numeric default null, top numeric default null, right_ numeric default null, bottom numeric default null) language plpgsql as $$
+begin
+  if left_  is not null then xls.page.margin_left   := left_;  end if;
+  if top    is not null then xls.page.margin_top    := top;    end if;
+  if right_ is not null then xls.page.margin_right  := right_; end if;
+  if bottom is not null then xls.page.margin_bottom := bottom; end if; 
+end
+$$;
+
+create or replace procedure pgxls.set_page_margins(inout xls pgxls.xls, left_ numeric default null, top numeric default null, right_ numeric default null, bottom numeric default null) language plpgsql as $$
+begin
+  if left_  is not null then xls.page.margin_left   := left_;  end if;
+  if top    is not null then xls.page.margin_top    := top;    end if;
+  if right_ is not null then xls.page.margin_right  := right_; end if;
+  if bottom is not null then xls.page.margin_bottom := bottom; end if; 
+end
+$$;
+
+create or replace procedure pgxls.set_page_rows_repeat(inout xls pgxls.xls, row_from int, row_to int default null) language plpgsql as $$
+begin
+  xls.page.rows_repeat_from := row_from;
+  xls.page.rows_repeat_to   := coalesce(row_to, row_from);
+end
+$$;
+
+create or replace procedure pgxls.set_page_paper(inout xls pgxls.xls, format pgxls.page_paper_format default null, orientation pgxls.page_orientation default null) language plpgsql as $$
+begin
+  if format      is not null then xls.page.paper_format      := format;      end if;
+  if orientation is not null then xls.page.paper_orientation := orientation; end if; 
+end
+$$;
+
 
 create or replace procedure pgxls._build_file(inout xls pgxls.xls) language plpgsql as $$
 begin
@@ -984,19 +1058,41 @@ create or replace procedure pgxls._build_file$xl_worksheets_sheet_row(inout xls 
 declare
   v_body text := '';
   v_cell pgxls._cell;
+  v_style pgxls._style;
+  v_font_size int;
+  v_line text; 
+  v_line_count int; 
   v_row_height int := 0;
   v_cell_height int;
 begin
   for v_column in 1..xls.columns_len loop
     v_cell := xls.cells[v_column];
     continue when v_cell is null;
-    v_body := v_body || '      <c r="'||xls.columns[v_column].name||xls.rows_len||'" s="'||v_cell.style||'" t="'||v_cell.type||'"><v>'||v_cell.value||'</v></c>'||xls.newline;
-    if xls.row_height is null then   
-      v_cell_height := 1+xls.fonts[xls.styles[xls.cells[v_column].style].font].size*1.3;
+    if xls.row_height is null then
+      v_style := xls.styles[xls.cells[v_column].style];
+      v_font_size := xls.fonts[v_style.font].size;
+      if v_style.alignment_text_wrap then
+       v_cell.value := translate(v_cell.value,chr(13),'');
+       v_line_count := 0; 
+       foreach v_line in array string_to_array(v_cell.value,chr(10)) loop
+         v_line_count := v_line_count + ceil(length(v_line)/(xls.columns[v_column].width*10.0/v_font_size-v_style.alignment_indent-3)+0.1);
+       end loop;
+      else
+        v_line_count := 1;
+      end if;
+      v_cell_height := pgxls.get_cell_height(v_line_count, v_font_size);
       if v_row_height < v_cell_height then
         v_row_height := v_cell_height;
       end if;
     end if; 
+    if v_cell.type='s' and v_cell.value!=''  then   
+      call pgxls._add_file_subpart(xls.id, 'xl/sharedStrings.xml', 2, xls.strings_len,
+        '  <si>'||xmlelement(name "t", xmlattributes('preserve' as "xml:space"), v_cell.value)||'</si>'||xls.newline	
+      );    
+      v_cell.value := xls.strings_len;
+      xls.strings_len := xls.strings_len+1;
+    end if;     
+    v_body := v_body || '      <c r="'||xls.columns[v_column].name||xls.rows_len||'" s="'||v_cell.style||'" t="'||v_cell.type||'"><v>'||v_cell.value||'</v></c>'||xls.newline;
   end loop;
   call pgxls._add_file_subpart(xls.id, xls.sheet_file_name, 2, xls.rows_len,
     '    <row r="'||xls.rows_len||'" customFormat="false" customHeight="'||(xls.row_height is not null or v_row_height>0)||'" ht="'||coalesce(xls.row_height,v_row_height)||'" hidden="false" outlineLevel="0" collapsed="false">'||xls.newline||  
@@ -1020,6 +1116,7 @@ $$;
 create or replace procedure pgxls._build_file$xl_worksheets_sheet(inout xls pgxls.xls) language plpgsql as $$
 declare
   v_body text;
+  v_page pgxls._page := xls.page;
 begin
   if xls.rows_len = 0 then
     call pgxls.add_row(xls);
@@ -1028,8 +1125,13 @@ begin
     call pgxls._build_file$xl_worksheets_sheet_row(xls);          
   end if; 
   call pgxls._add_file_subpart(xls.id, 'xl/workbook.xml', 2, xls.sheets_len, 
-      '    <sheet name="'||xls.sheet_name||'" sheetId="'||xls.sheets_len||'" state="visible" r:id="rId'||(xls.sheets_len+1)||'"/>'||xls.newline
+      '    '||xmlelement(name "sheet", xmlattributes(xls.sheet_name as "name", xls.sheets_len as "sheetId", 'visible' as "state", 'rId'||(xls.sheets_len+1) as "r:id"))||xls.newline
   );
+  if v_page.rows_repeat_from is not null then
+    call pgxls._add_file_subpart(xls.id, 'xl/workbook.xml', 4, xls.sheets_len,
+       '    '||replace(xmlelement(name "definedName", xmlattributes('_xlnm.Print_Titles' as "name", (xls.sheets_len-1) as "localSheetId"), quote_literal(xls.sheet_name)||'!$'||v_page.rows_repeat_from||':$'||v_page.rows_repeat_to)::text,'''','&apos;')||xls.newline
+    );
+  end if;
   v_body := 
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'||xls.newline||    
     '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'||xls.newline||
@@ -1056,24 +1158,30 @@ begin
   end if;
   call pgxls._add_file_subpart(xls.id, xls.sheet_file_name, 9, 9,
     '  <printOptions headings="false" gridLines="false" gridLinesSet="true" horizontalCentered="false" verticalCentered="false"/>'||xls.newline||
-    '  <pageMargins left="0.1" right="0.1" top="0.2" bottom="0.2" header="0.0" footer="0.0"/>'||xls.newline||    
-    '  <pageSetup paperSize="9" scale="100" firstPageNumber="1" fitToWidth="1" fitToHeight="1" pageOrder="downThenOver" orientation="portrait" blackAndWhite="false" draft="false" cellComments="none" useFirstPageNumber="true" horizontalDpi="300" verticalDpi="300" copies="1"/>'||xls.newline||
-    '  <headerFooter differentFirst="false" differentOddEven="false">'||xls.newline||
-    '    <oddHeader></oddHeader>'||xls.newline||
-    '    <oddFooter></oddFooter>'||xls.newline||
+    '  <pageMargins'||xls.newline||
+    '    left   = "'||v_page.margin_left||'"'||xls.newline||
+    '    right  = "'||v_page.margin_right||'"'||xls.newline||
+    '    header = "'||case when v_page.header_text is not null then v_page.margin_top else 0.000 end||'"'||xls.newline||
+    '    top    = "'||case when v_page.header_text is not null then round(v_page.margin_top+(0.035+v_page.header_font_size/65.0)+0.050,3) else v_page.margin_top end||'"'||xls.newline||
+    '    bottom = "'||v_page.margin_bottom||'"'||xls.newline||
+    '    footer = "'|| 0.000 ||'"'||xls.newline||
+    '  />'||xls.newline||
+    '  <pageSetup'||xls.newline||
+    '    paperSize="'||case when v_page.paper_format='A3' then 8 when v_page.paper_format='A4' then 9 else 11 end||'"'||xls.newline||
+    '    orientation="'||v_page.paper_orientation||'"'||xls.newline||     
+    '    scale="100" firstPageNumber="1" fitToWidth="1" fitToHeight="1" pageOrder="downThenOver" blackAndWhite="false" draft="false" cellComments="none" useFirstPageNumber="true" horizontalDpi="300" verticalDpi="300" copies="1"'||xls.newline||
+    '  />'||xls.newline||    
+    '  <headerFooter differentFirst="false" differentOddEven="false">'||xls.newline||    
+    '    '||xmlelement(name "oddHeader", 
+                       '&'||case when v_page.header_alignment='left' then 'L' when v_page.header_alignment='right' then 'R' else 'C' end||
+                       '&"'||v_page.header_font_name||'"'||
+                       '&'||v_page.header_font_size||
+                       v_page.header_text
+                           
+            )||xls.newline||
+    '    <oddFooter/>'||xls.newline||
     '  </headerFooter>'||xls.newline||
     '</worksheet>'
-  );
-end
-$$;
-
-create or replace procedure pgxls._build_file$xl_shared_strings_add(inout xls pgxls.xls, string text) language plpgsql as $$
-declare
-  v_body text;
-begin
-  xls.strings_len := xls.strings_len+1;	
-  call pgxls._add_file_subpart(xls.id, 'xl/sharedStrings.xml', 2, xls.strings_len,  		
-    '  <si>'||xmlelement(name "t", xmlattributes('preserve' as "xml:space"), string)||'</si>'||xls.newline 
   );
 end
 $$;
@@ -1160,7 +1268,7 @@ begin
   for v_style in 0..v_styles_len-1 loop
     v_body := v_body ||
       '    <xf numFmtId="'||xls.styles[v_style].format||'" fontId="'||xls.styles[v_style].font||'" fillId="'||xls.styles[v_style].fill||'" borderId="'||xls.styles[v_style].border||'" xfId="0" applyFont="true" applyBorder="true" applyAlignment="true" applyProtection="false">'||xls.newline||
-      '      <alignment horizontal="'||xls.styles[v_style].alignment_horizontal||'" indent="'||xls.styles[v_style].alignment_indent||'" vertical="'||xls.styles[v_style].alignment_vertical||'" textRotation="0" wrapText="false" shrinkToFit="false"/>'||xls.newline||
+      '      <alignment horizontal="'||xls.styles[v_style].alignment_horizontal||'" indent="'||xls.styles[v_style].alignment_indent||'" vertical="'||xls.styles[v_style].alignment_vertical||'" textRotation="0" wrapText="'||xls.styles[v_style].alignment_text_wrap||'" shrinkToFit="false"/>'||xls.newline||
       '      <protection locked="true" hidden="false"/>'||xls.newline||
       '    </xf>'||xls.newline;
   end loop;
@@ -1189,8 +1297,12 @@ begin
     '  </bookViews>'||xls.newline||
     '  <sheets>'||xls.newline
   );
-  call pgxls._add_file_subpart(xls.id, v_file_name, 9, 1,
+  call pgxls._add_file_subpart(xls.id, v_file_name, 3, 1,
     '  </sheets>'||xls.newline||
+    '  <definedNames>'||xls.newline
+  );
+  call pgxls._add_file_subpart(xls.id, v_file_name, 9, 1,
+    '  </definedNames>'||xls.newline||    
     '  <calcPr iterateCount="100" refMode="A1" iterate="false" iterateDelta="0.001"/>'||xls.newline||
     '</workbook>'
   );     
