@@ -51,7 +51,7 @@ begin
   end loop;
   --------------------------------------------------------------------------------------------------------------------------------
   -- Add sheet with wrap text
-  call pgxls.add_sheet(xls, array[40,30], sheet_name=>'Wrap text');
+  call pgxls.add_sheet(xls, array[40,30], name=>'Wrap text');
   call pgxls.set_column_alignment(xls, 1, horizontal=>'justify', text_wrap=>true);
   call pgxls.set_column_alignment(xls, 2, text_wrap=>true); 
   -- Text without line feed
@@ -65,17 +65,16 @@ begin
   );
   --------------------------------------------------------------------------------------------------------------------------------
   -- Add sheet with print setup
-  call pgxls.add_sheet(xls, array[15,15,15], sheet_name=>'Print setup');
+  call pgxls.add_sheet(xls, array[15,15,15], name=>'Print setup');
   call pgxls.set_page_paper(xls, format=>'A5', orientation=>'landscape');
   call pgxls.set_page_header(xls, 'Example full / sheet "Print setup" page &P of &N');
   call pgxls.set_page_rows_repeat(xls, 3); -- table header on each page  
   call pgxls.set_cell_value(xls, 'Use "Print preview"'::text, font_size=>20, alignment_horizontal=>'center');
   call pgxls.merge_cells(xls, 3);
   call pgxls.add_row(xls);
-  call pgxls.add_row(xls);
-  call pgxls.set_column_border(xls, 1, 'thin');
-  call pgxls.set_column_border(xls, 2, 'thin');
-  call pgxls.set_column_border(xls, 3, 'thin');
+  call pgxls.set_all_border(xls);
+  call pgxls.add_row(xls);  
+  call pgxls.set_all_fill(xls, pgxls.color$light_gray()); 
   call pgxls.set_cell_value(xls, 'x'::text,  font_bold=>true, alignment_horizontal=>'center');
   call pgxls.set_cell_value(xls, '√x'::text, font_bold=>true, alignment_horizontal=>'center');
   call pgxls.set_cell_value(xls, 'x²'::text, font_bold=>true, alignment_horizontal=>'center');  
