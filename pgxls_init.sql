@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.4.1'; -- 2024.10.08 19:06:44
+  return '24.4.3'; -- 2024.10.23 19:12:23
 end; $$;
 
 do $$ begin
@@ -423,7 +423,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls._add_format(inout xls pgxls.xls, inout format int, code varchar) language plpgsql as $$
+create or replace procedure pgxls._add_format_code(inout xls pgxls.xls, inout format int, code varchar) language plpgsql as $$
 declare
   v_format pgxls._format;
 begin
@@ -499,8 +499,9 @@ declare
   v_fills_upper int := coalesce(array_upper(xls.fills,1),1);
   v_fill pgxls._fill;
 begin
-  if length(foreground_color)<6 then
+  if foreground_color is null or length(foreground_color)<6 then
     fill := 0;
+    foreground_color := 'none';
   end if;
   for f in 2..v_fills_upper loop	
     if xls.fills[f].foreground_color=foreground_color then
@@ -514,167 +515,66 @@ begin
 end
 $$;
 
-create or replace procedure pgxls._set_column_style(inout xls pgxls.xls, column_ int, cell_type int, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null) language plpgsql as $$
-declare
-  v_column pgxls._column := xls.columns[column_];
-  v_style int := xls.columns[column_].styles[cell_type];
-begin
-  call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
-  v_column.styles[cell_type] := v_style;
-  xls.columns[column_] := v_column;
-end
-$$;
-
-create or replace procedure pgxls._set_column_format(inout xls pgxls.xls, column_ int, cell_type int, code varchar) language plpgsql as $$
-declare
-  v_format int;
-begin
-  call pgxls._add_format(xls, v_format, code);
-  call pgxls._set_column_style(xls, column_, cell_type, format => v_format); 
-end
-$$;
-
-create or replace procedure pgxls._set_column_font(inout xls pgxls.xls, column_ int, cell_type int, name varchar, size int, bold boolean, italic boolean, underline boolean, strike boolean, color varchar(6)) language plpgsql as $$
-declare  
-  v_font int := xls.styles[xls.columns[column_].styles[cell_type]].font;
-begin
-  call pgxls._add_font(xls, v_font, name, size, bold, italic, underline, strike, color);
-  call pgxls._set_column_style(xls, column_, cell_type, font => v_font); 
-end
-$$;
-
-create or replace procedure pgxls._set_column_border(inout xls pgxls.xls, column_ int, cell_type int, around pgxls.border_line, left_ pgxls.border_line, top pgxls.border_line, right_ pgxls.border_line, bottom pgxls.border_line) language plpgsql as $$
-declare  
-  v_border int := xls.styles[xls.cells[column_].style].border;
-begin
-  call pgxls._add_border(xls, v_border, around, left_, top, right_, bottom);
-  call pgxls._set_column_style(xls, column_, cell_type, border => v_border); 
-end
-$$;
-
-create or replace procedure pgxls._set_column_fill(inout xls pgxls.xls, column_ int, cell_type int, foreground_color varchar(6)) language plpgsql as $$
-declare  
-  v_fill int := xls.styles[xls.cells[column_].style].fill;
-begin
-  call pgxls._add_fill(xls, v_fill, foreground_color);
-  call pgxls._set_column_style(xls, column_, cell_type, fill => v_fill); 
-end
-$$;
-
-create or replace procedure pgxls.set_column_format_integer(inout xls pgxls.xls, column_ int, thousands_separated boolean default true) language plpgsql as $$
-begin
-  call pgxls._set_column_format(xls, column_, 2, pgxls.get_format_code_numeric(0, thousands_separated));
-end
-$$;
-
-create or replace procedure pgxls.set_column_format_numeric(inout xls pgxls.xls, column_ int, decimal_places int default 2, thousands_separated boolean default true) language plpgsql as $$
-begin
-  call pgxls._set_column_format(xls, column_, 3, pgxls.get_format_code_numeric(decimal_places, thousands_separated)); 
-end
-$$;
-
-create or replace procedure pgxls.set_column_format_boolean(inout xls pgxls.xls, column_ int, text_true varchar default 'True', text_false varchar default 'False', text_null varchar default '') language plpgsql as $$
-begin
-  call pgxls._set_column_format(xls, column_, 7, pgxls.get_format_code_boolean(text_true, text_false, text_null));	
-end
-$$;
-
 do $body$
 declare 
   v_type record;  
-  v_sql_font text := '';
-  v_sql_border text := '';
-  v_sql_fill text := '';
-  v_sql_alignment text := '';
-  v_newline char := chr(10); 
+  v_newline char := chr(10);  
+  v_func_name text;
+  v_func_params_def text :=
+    'font_name varchar default null, font_size int default null, font_bold boolean default null, font_italic boolean default null, font_underline boolean default null, font_strike boolean default null, font_color varchar(6) default null, '
+    'border_around pgxls.border_line default null, border_left pgxls.border_line default null, border_top pgxls.border_line default null, border_right pgxls.border_line default null, border_bottom pgxls.border_line default null, '
+    'fill_foreground_color varchar(6) default null, ' 
+    'alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null';  
+  v_func_params_call text :=
+    'font_name, font_size, font_bold, font_italic, font_underline, font_strike, font_color, '
+    'border_around, border_left, border_top, border_right, border_bottom, '
+    'fill_foreground_color, '
+    'alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap';
+  v_funcs_call text := '';   
 begin
   for v_type in (select * from unnest(array['text','integer','numeric','date','time','timestamp','boolean']) with ordinality as t(name, position)) loop
-    execute   
-      'create or replace procedure pgxls.set_column_format_'||v_type.name||'(inout xls pgxls.xls, column_ int, code varchar) language plpgsql as $$'||v_newline||
+      v_func_name := 'pgxls.set_column_format_'||v_type.name;
+    execute  
+      'create or replace procedure '||v_func_name||'(inout xls pgxls.xls, column_ int, format_code varchar default null, '||v_func_params_def||') language plpgsql as $$'||v_newline||
+      'declare'||v_newline||
+      '  v_column pgxls._column := xls.columns[column_];'||v_newline||
+      '  v_style int := v_column.styles['||v_type.position||'];'||v_newline||
+      '  v_format int;'||v_newline||
+      '  v_font int;'||v_newline||      
+      '  v_border int;'||v_newline||
+      '  v_fill int;'||v_newline||
       'begin'||v_newline||
-      '  call pgxls._set_column_format(xls, column_, '||v_type.position||', code);'||v_newline||	
+      '  if format_code is not null then'||v_newline||
+      '    v_format := null;'||v_newline||
+      '    call pgxls._add_format_code(xls, v_format, format_code);'||v_newline||
+      '  end if;'||v_newline||
+      '  if font_name is not null or font_size is not null or font_bold is not null or font_italic is not null or font_underline is not null or font_strike is not null or font_color is not null then'||v_newline||
+      '    v_font := xls.styles[v_style].font;'||v_newline||
+      '    call pgxls._add_font(xls, v_font, font_name, font_size, font_bold, font_italic, font_underline, font_strike, font_color);'||v_newline||
+      '  end if;'||v_newline||
+      '  if border_around is not null or border_left is not null or border_top is not null or border_right is not null or border_bottom is not null then'||v_newline||
+      '    v_border := xls.styles[v_style].border;'||v_newline||
+      '    call pgxls._add_border(xls, v_border, border_around, border_left, border_top, border_right, border_bottom);'||v_newline||
+      '  end if;'||v_newline||      
+      '  if fill_foreground_color is not null then'||v_newline||
+      '    v_fill := xls.styles[v_style].fill;'||v_newline||
+      '    call pgxls._add_fill(xls, v_fill, fill_foreground_color);'||v_newline||
+      '  end if;'||v_newline|| 
+      '  call pgxls._add_style(xls, v_style, v_format, v_font, v_border, v_fill, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);'||v_newline||
+      '  v_column.styles['||v_type.position||'] := v_style;'||v_newline||
+      '  xls.columns[column_] := v_column;'||v_newline||
       'end'||v_newline||
-      '$$;';
-    execute   
-      'create or replace procedure pgxls.set_column_font_'||v_type.name||'(inout xls pgxls.xls, column_ int, name varchar default null, size int default null, bold boolean default null, italic boolean default null, underline boolean default null, strike boolean default null, color varchar(6) default null) language plpgsql as $$'||v_newline||
-      'begin'||v_newline||
-      '  call pgxls._set_column_font(xls, column_, '||v_type.position||', name, size, bold, italic, underline, strike, color);'||v_newline||	
-      'end'||v_newline||
-      '$$;';
-    v_sql_font := v_sql_font||'  call pgxls.set_column_font_'||v_type.name||'(xls, column_, name, size, bold, italic, underline, strike, color);'||v_newline;
-    execute   
-      'create or replace procedure pgxls.set_column_border_'||v_type.name||'(inout xls pgxls.xls, column_ int, around pgxls.border_line default null, left_ pgxls.border_line default null, top pgxls.border_line default null, right_ pgxls.border_line default null, bottom pgxls.border_line default null) language plpgsql as $$'||v_newline||
-      'begin'||v_newline||
-      '  call pgxls._set_column_border(xls, column_, '||v_type.position||', around, left_, top, right_, bottom);'||v_newline||	
-      'end'||v_newline||
-      '$$;';
-    v_sql_border := v_sql_border||'  call pgxls.set_column_border_'||v_type.name||'(xls, column_, around, left_, top, right_, bottom);'||v_newline;
-    execute   
-      'create or replace procedure pgxls.set_column_fill_'||v_type.name||'(inout xls pgxls.xls, column_ int, foreground_color varchar(6) default ''none'') language plpgsql as $$'||v_newline||
-      'begin'||v_newline||
-      '  call pgxls._set_column_fill(xls, column_, '||v_type.position||', foreground_color);'||v_newline||	
-      'end'||v_newline||
-      '$$;';
-    v_sql_fill := v_sql_fill||'  call pgxls.set_column_fill_'||v_type.name||'(xls, column_, foreground_color);'||v_newline;
-    execute 
-      'create or replace procedure pgxls.set_column_alignment_'||v_type.name||'(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null) language plpgsql as $$'||v_newline||
-      'begin'||v_newline||
-      '  call pgxls._set_column_style(xls, column_, '||v_type.position||', alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical, alignment_text_wrap => text_wrap);'||v_newline|| 	
-      'end'||v_newline||
-      '$$;';
-    v_sql_alignment := v_sql_alignment||'  call pgxls.set_column_alignment_'||v_type.name||'(xls, column_, horizontal, indent, vertical, text_wrap);'||v_newline;    
-  end loop;
-  execute   
-    'create or replace procedure pgxls.set_column_font(inout xls pgxls.xls, column_ int, name varchar default null, size int default null, bold boolean default null, italic boolean default null, underline boolean default null, strike boolean default null, color varchar(6) default null) language plpgsql as $$'||v_newline||
-    'begin'||v_newline||
-    v_sql_font||	
-    'end'||v_newline||
     '$$;';
-  execute   
-    'create or replace procedure pgxls.set_column_border(inout xls pgxls.xls, column_ int, around pgxls.border_line default null, left_ pgxls.border_line default null, top pgxls.border_line default null, right_ pgxls.border_line default null, bottom pgxls.border_line default null) language plpgsql as $$'||v_newline||
+    v_funcs_call := v_funcs_call || '  call '||v_func_name||'(xls, column_, null, '||v_func_params_call||');'||v_newline;
+  end loop; 
+  execute
+    'create or replace procedure pgxls.set_column_format(inout xls pgxls.xls, column_ int, '||v_func_params_def||') language plpgsql as $$'||v_newline||
     'begin'||v_newline||
-    v_sql_border||	
+    v_funcs_call||
     'end'||v_newline||
-    '$$;';
-  execute   
-    'create or replace procedure pgxls.set_column_fill(inout xls pgxls.xls, column_ int, foreground_color varchar(6)) language plpgsql as $$'||v_newline||
-    'begin'||v_newline||
-    v_sql_fill||	
-    'end'||v_newline||
-    '$$;';
-  execute   
-    'create or replace procedure pgxls.set_column_alignment(inout xls pgxls.xls, column_ int, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null) language plpgsql as $$'||v_newline||
-    'begin'||v_newline||
-    v_sql_alignment||	
-    'end'||v_newline||
-    '$$;';
+    '$$;'; 
 end
 $body$;
-
-create or replace procedure pgxls.set_all_border(inout xls pgxls.xls, border_line pgxls.border_line default 'thin') language plpgsql as $$
-begin
-  for c in 1..xls.columns_len loop
-    call pgxls.set_column_border(xls, c, border_line);  
-  end loop;
-end
-$$;
-
-create or replace procedure pgxls.set_all_fill(inout xls pgxls.xls, foreground_color varchar(6)) language plpgsql as $$
-begin
-  for c in 1..xls.columns_len loop
-    call pgxls.set_column_fill(xls, c, foreground_color);  
-  end loop;
-end
-$$;
-
-create or replace procedure pgxls.set_all_font(inout xls pgxls.xls, name varchar default null, size int default null, bold boolean default null, italic boolean default null, underline boolean default null, strike boolean default null, color varchar(6) default null) language plpgsql as $$
-begin
-  for c in 1..xls.columns_len loop
-    call pgxls.set_column_font(xls, c, name, size, bold, italic, underline, strike, color);
-  end loop;
-end
-$$;
-
 
 create or replace procedure pgxls._set_cell_style(inout xls pgxls.xls, format int default null, font int default null, border int default null, fill int default null, alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null, column_ int default null) language plpgsql as $$
 declare 
@@ -687,54 +587,15 @@ begin
   end if;
   v_cell := xls.cells[v_column];
   if v_cell is null then
-    raise exception 'Cell for column % not assigned, initially need to call pgxls.set_cell_value', v_column;  
+    -- raise exception 'Cell for column % not assigned, initially need to call pgxls.set_cell_value', v_column;
+    v_cell.type := 's';
+    v_cell.style := xls.columns[v_column].styles[1];
+    v_cell.value := '';
   end if;
   v_style := v_cell.style;
   call pgxls._add_style(xls, v_style, format, font, border, fill, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
   v_cell.style := v_style;
   xls.cells[v_column] := v_cell;
-end
-$$;
-
-create or replace procedure pgxls.set_cell_format(inout xls pgxls.xls, code varchar, column_ int default null) language plpgsql as $$
-declare
-  v_format int;
-begin
-  call pgxls._add_format(xls, v_format, code);
-  call pgxls._set_cell_style(xls, format => v_format, column_=>column_); 
-end
-$$;
-
-create or replace procedure pgxls.set_cell_font(inout xls pgxls.xls, name varchar default null, size int default null, bold boolean default null, italic boolean default null, underline boolean default null, strike boolean default null, color varchar(6) default null, column_ int default null) language plpgsql as $$
-declare  
-  v_font int := xls.styles[xls.cells[coalesce(column_,xls.column_current)].style].font;
-begin
-  call pgxls._add_font(xls, v_font, name, size, bold, italic, underline, strike, color);
-  call pgxls._set_cell_style(xls, font => v_font, column_=>column_); 
-end
-$$;
-
-create or replace procedure pgxls.set_cell_border(inout xls pgxls.xls, around pgxls.border_line default null, left_ pgxls.border_line default null, top pgxls.border_line default null, right_ pgxls.border_line default null, bottom pgxls.border_line default null, column_ int default null) language plpgsql as $$
-declare  
-  v_border int := xls.styles[xls.cells[coalesce(column_,xls.column_current)].style].border;
-begin
-  call pgxls._add_border(xls, v_border, around, left_, top, right_, bottom);
-  call pgxls._set_cell_style(xls, border => v_border, column_=>column_); 
-end
-$$;
-
-create or replace procedure pgxls.set_cell_fill(inout xls pgxls.xls, foreground_color varchar(6) default 'none', column_ int default null) language plpgsql as $$
-declare  
-  v_fill int;
-begin
-  call pgxls._add_fill(xls, v_fill, foreground_color);
-  call pgxls._set_cell_style(xls, fill => v_fill, column_=>column_); 
-end
-$$;
-
-create or replace procedure pgxls.set_cell_alignment(inout xls pgxls.xls, horizontal pgxls.alignment_horizontal default null, indent int default null, vertical pgxls.alignment_vertical default null, text_wrap boolean default null, column_ int default null) language plpgsql as $$
-begin
-  call pgxls._set_cell_style(xls, alignment_horizontal => horizontal, alignment_indent => indent, alignment_vertical => vertical, alignment_text_wrap => text_wrap, column_=>column_); 	
 end
 $$;
 
@@ -829,6 +690,46 @@ begin
 end
 $$;
 
+create or replace procedure pgxls.format_cell(
+  inout xls pgxls.xls, 
+  column_ int default null,
+  format_code varchar default null,
+  font_name varchar default null, font_size int default null, font_bold boolean default null, font_italic boolean default null, font_underline boolean default null, font_strike boolean default null, font_color varchar(6) default null,
+  border_around pgxls.border_line default null, border_left pgxls.border_line default null, border_top pgxls.border_line default null, border_right pgxls.border_line default null, border_bottom pgxls.border_line default null,
+  fill_foreground_color varchar(6) default null, 
+  alignment_horizontal pgxls.alignment_horizontal default null, alignment_indent int default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
+) language plpgsql as $$
+declare
+  v_column int := coalesce(column_, xls.column_current);
+  v_format int;
+  v_font int;
+  v_border int;
+  v_fill int; 
+begin
+  if format_code is not null then    
+    call pgxls._add_format_code(xls, v_format, format_code);
+    call pgxls._set_cell_style(xls, format => v_format, column_=>v_column);   
+  end if;
+  if font_name is not null or font_size is not null or font_bold is not null or font_italic is not null or font_underline is not null or font_strike is not null or font_color is not null then
+    v_font := xls.styles[xls.cells[v_column].style].font;
+    call pgxls._add_font(xls, v_font, font_name, font_size, font_bold, font_italic, font_underline, font_strike, font_color);
+    call pgxls._set_cell_style(xls, font => v_font, column_=>v_column); 
+  end if;
+  if border_around is not null or border_left is not null or border_top is not null or border_right is not null or border_bottom is not null then
+    v_border := xls.styles[xls.cells[v_column].style].border;
+    call pgxls._add_border(xls, v_border, border_around, border_left, border_top, border_right, border_bottom);
+    call pgxls._set_cell_style(xls, border => v_border, column_=>v_column);
+  end if;
+  if fill_foreground_color is not null then
+    call pgxls._add_fill(xls, v_fill, fill_foreground_color);
+    call pgxls._set_cell_style(xls, fill=>v_fill, column_=>v_column); 
+  end if; 
+  if alignment_horizontal is not null or alignment_indent is not null or alignment_vertical is not null or alignment_text_wrap is not null then
+    call pgxls._set_cell_style(xls, alignment_horizontal=>alignment_horizontal, alignment_indent=>alignment_indent, alignment_vertical=>alignment_vertical, alignment_text_wrap=>alignment_text_wrap, column_=>v_column); 	
+  end if;
+end
+$$;
+
 create or replace procedure pgxls.set_cell_value(
   inout xls pgxls.xls, 
   value anyelement, 
@@ -855,22 +756,42 @@ begin
   elseif pgxls._type_is_timestamp(v_value_type) then call pgxls.set_cell_timestamp (xls, value::timestamp, xls.column_current);
   elseif pgxls._type_is_boolean  (v_value_type) then call pgxls.set_cell_boolean   (xls, value::boolean,   xls.column_current);  
   else                                               call pgxls.set_cell_text      (xls, value::text,      xls.column_current);  
-  end if; 
-  if format_code is not null then
-    call pgxls.set_cell_format(xls, column_=>xls.column_current, code=>format_code);
   end if;
-  if font_name is not null or font_size is not null or font_bold is not null or font_italic is not null or font_underline is not null or font_strike is not null or font_color is not null then
-    call pgxls.set_cell_font(xls, column_=>xls.column_current, name=>font_name, size=>font_size, bold=>font_bold, italic=>font_italic, underline=>font_underline, strike=>font_strike, color=>font_color);  
+  call pgxls.format_cell(xls, xls.column_current, format_code, font_name, font_size, font_bold, font_italic, font_underline, font_strike, font_color, border_around, border_left, border_top, border_right, border_bottom, fill_foreground_color, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
+end
+$$;
+
+create or replace procedure pgxls.format_row(
+  inout xls pgxls.xls, 
+  font_name varchar default null, font_size int default null, font_bold boolean default null, font_color varchar(6) default null,
+  border pgxls.border_line default null, 
+  fill_foreground_color varchar(6) default null, 
+  alignment_horizontal pgxls.alignment_horizontal default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
+) language plpgsql as $$
+begin
+  if xls.cells is null then 	
+  	raise exception 'Row not added, call pgxls.add_row first';
   end if;
-  if border_around is not null or border_left is not null or border_top is not null or border_right is not null or border_bottom is not null then
-    call pgxls.set_cell_border(xls, column_=>xls.column_current, around=>border_around, left_=>border_left, top=>border_top, right_=>border_right, bottom=>border_bottom);
+  for column_ in 1..xls.columns_len loop
+    call pgxls.format_cell(xls, column_, null, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);
+  end loop;
+end
+$$;
+
+create or replace procedure pgxls.format_all(
+  inout xls pgxls.xls,
+  font_name varchar default null, font_size int default null, font_bold boolean default null, font_color varchar(6) default null,
+  border pgxls.border_line default null, 
+  fill_foreground_color varchar(6) default null, 
+  alignment_horizontal pgxls.alignment_horizontal default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
+) language plpgsql as $$
+begin
+  if xls.cells is not null then
+    call pgxls.format_row(xls, font_name, font_size, font_bold, font_color, border, fill_foreground_color, alignment_horizontal, alignment_vertical, alignment_text_wrap);
   end if;
-  if fill_foreground_color is not null then
-    call pgxls.set_cell_fill(xls, column_=>xls.column_current, foreground_color=>fill_foreground_color);
-  end if; 
-  if alignment_horizontal is not null or alignment_indent is not null or alignment_vertical is not null or alignment_text_wrap is not null then
-    call pgxls.set_cell_alignment(xls, column_=>xls.column_current, horizontal=>alignment_horizontal, indent=>alignment_indent, vertical=>alignment_vertical, text_wrap=>alignment_text_wrap);
-  end if;
+  for column_ in 1..xls.columns_len loop
+    call pgxls.set_column_format(xls, column_, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);  
+  end loop;
 end
 $$;
 
@@ -958,6 +879,8 @@ begin
   call pgxls._build_file$xl_workbook(xls);
   call pgxls._build_file$content_types(xls);
   call pgxls._zip_build(xls);
+  drop table if exists qqq;
+  create table qqq as select * from pgxls_temp_file;
 end
 $$;
 
@@ -994,6 +917,26 @@ begin
   call pgxls.add_sheet_by_query(xls, query);
   return pgxls.get_file(xls);	
 end
+$$;
+
+create or replace procedure pgxls.save_file(inout xls pgxls.xls, filepath varchar) language plpgsql as $$  
+declare
+  v_lo oid;
+begin 
+  v_lo := lo_from_bytea(0, pgxls.get_file(xls));
+  perform lo_export(v_lo, filepath);
+  perform lo_unlink(v_lo);
+end 
+$$;
+
+create or replace procedure pgxls.save_file_by_query(filepath varchar, query text) language plpgsql as $$
+declare
+  v_lo oid;
+begin 
+  v_lo := lo_from_bytea(0, pgxls.get_file_by_query(query));
+  perform lo_export(v_lo, filepath);
+  perform lo_unlink(v_lo);
+end 
 $$;
 
 create or replace procedure pgxls._add_file_subpart(xls_id int, name varchar, part int, subpart int, body text) language plpgsql as $$

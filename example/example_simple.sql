@@ -1,7 +1,10 @@
 -- 1. Create and get file (bytea) by SQL query
-select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10');
+select pgxls.get_file_by_query('select * from pg_tables');
 
--- 2. Create function that returns file (bytea)
+-- 2. Save Excel file on server by SQL query
+call pgxls.save_file_by_query('/tmp/top_relations_by_size.xlsx', 'select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10');
+
+-- 3. Create function that returns file (bytea)
 create or replace function excel_top_relations_by_size() returns bytea language plpgsql as $$
 declare 
   rec record;
