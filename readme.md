@@ -24,7 +24,12 @@ More info on page [download](https://pgxls.org/en/download/)
 
 Create and get file (bytea) by SQL query
 ```sql
-select pgxls.get_file_by_query('select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10');
+select pgxls.get_file_by_query('select * from pg_class');
+```
+
+Save Excel file on server by SQL query
+```sql
+call pgxls.save_file_by_query('/tmp/top_relations_by_size.xlsx', 'select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10')
 ```
 
 Save file on command line  
