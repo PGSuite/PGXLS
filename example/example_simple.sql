@@ -19,9 +19,9 @@ begin
     -- Add row
     call pgxls.add_row(xls);
     -- Set data from query into cells
-    call pgxls.set_cell_value(xls, rec.oid);      
-    call pgxls.set_cell_value(xls, rec.relname);   
-    call pgxls.set_cell_value(xls, rec.size);
+    call pgxls.put_cell(xls, rec.oid);      
+    call pgxls.put_cell(xls, rec.relname);   
+    call pgxls.put_cell(xls, rec.size);
   end loop;  
   -- Returns file(bytea)
   return pgxls.get_file(xls);      
@@ -29,4 +29,3 @@ end
 $$;
 -- Get file
 select excel_top_relations_by_size();
-

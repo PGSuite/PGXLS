@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.4.3'; -- 2024.10.23 19:12:23
+  return '24.4.4'; -- 2024.10.25 19:53:37
 end; $$;
 
 do $$ begin
@@ -271,7 +271,7 @@ begin
   xls.sheet_name := coalesce(name, 'Sheet'||xls.sheets_len);
   if columns_captions is not null then 
     for c in 1..array_length(columns_captions,1) loop
-      call pgxls.set_cell_value(xls, columns_captions[c], font_bold => true, alignment_horizontal => 'center');
+      call pgxls.put_cell(xls, columns_captions[c], font_bold => true, alignment_horizontal => 'center');
     end loop;
     call pgxls._build_file$xl_worksheets_sheet_row(xls);   
   end if; 
@@ -321,7 +321,7 @@ begin
       end;
     v_columns_widths[v_columns_len] := greatest(v_columns_widths[v_columns_len], length(v_rec_column.attname)*1.5);
     v_sql_block := v_sql_block||
-      '    call pgxls.set_cell_'||
+      '    call pgxls.put_cell_'||
       case when pgxls._type_is_integer  (v_rec_column.typname) then 'integer   (xls, rec.'||quote_ident(v_rec_column.attname)||'::bigint'
            when pgxls._type_is_numeric  (v_rec_column.typname) then 'numeric   (xls, rec.'||quote_ident(v_rec_column.attname)||'::numeric'
            when pgxls._type_is_date     (v_rec_column.typname) then 'date      (xls, rec.'||quote_ident(v_rec_column.attname)||'::date'
@@ -587,7 +587,6 @@ begin
   end if;
   v_cell := xls.cells[v_column];
   if v_cell is null then
-    -- raise exception 'Cell for column % not assigned, initially need to call pgxls.set_cell_value', v_column;
     v_cell.type := 's';
     v_cell.style := xls.columns[v_column].styles[1];
     v_cell.value := '';
@@ -606,7 +605,7 @@ create or replace function pgxls._type_is_time     (type regtype) returns boolea
 create or replace function pgxls._type_is_timestamp(type regtype) returns boolean language plpgsql as $$ begin return type in ('timestamp'::regtype,'timestamptz'::regtype); end $$;
 create or replace function pgxls._type_is_boolean  (type regtype) returns boolean language plpgsql as $$ begin return type in ('boolean'::regtype); end $$;
 
-create or replace procedure pgxls.set_cell_text(inout xls pgxls.xls, value text, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_text(inout xls pgxls.xls, value text, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -618,7 +617,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_integer(inout xls pgxls.xls, value bigint, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_integer(inout xls pgxls.xls, value bigint, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -630,7 +629,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_numeric(inout xls pgxls.xls, value numeric, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_numeric(inout xls pgxls.xls, value numeric, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -642,7 +641,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_date(inout xls pgxls.xls, value date, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_date(inout xls pgxls.xls, value date, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -654,7 +653,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_time(inout xls pgxls.xls, value time, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_time(inout xls pgxls.xls, value time, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -666,7 +665,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_timestamp(inout xls pgxls.xls, value timestamp, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_timestamp(inout xls pgxls.xls, value timestamp, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -678,7 +677,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_boolean(inout xls pgxls.xls, value boolean, column_ int default null) language plpgsql as $$
+create or replace procedure pgxls.put_cell_boolean(inout xls pgxls.xls, value boolean, column_ int default null) language plpgsql as $$
 declare
   v_cell pgxls._cell;
 begin
@@ -730,7 +729,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_cell_value(
+create or replace procedure pgxls.put_cell(
   inout xls pgxls.xls, 
   value anyelement, 
   column_ int default null,
@@ -749,13 +748,13 @@ begin
   if xls.column_current<1 or xls.column_current>xls.columns_len then 	
   	raise exception 'Column % out of range [1,%]', xls.column_current, xls.columns_len;
   end if;
-  if     pgxls._type_is_integer  (v_value_type) then call pgxls.set_cell_integer   (xls, value::bigint,    xls.column_current);
-  elseif pgxls._type_is_numeric  (v_value_type) then call pgxls.set_cell_numeric   (xls, value::numeric,   xls.column_current);
-  elseif pgxls._type_is_date     (v_value_type) then call pgxls.set_cell_date      (xls, value::date,      xls.column_current);
-  elseif pgxls._type_is_time     (v_value_type) then call pgxls.set_cell_time      (xls, value::time,      xls.column_current);
-  elseif pgxls._type_is_timestamp(v_value_type) then call pgxls.set_cell_timestamp (xls, value::timestamp, xls.column_current);
-  elseif pgxls._type_is_boolean  (v_value_type) then call pgxls.set_cell_boolean   (xls, value::boolean,   xls.column_current);  
-  else                                               call pgxls.set_cell_text      (xls, value::text,      xls.column_current);  
+  if     pgxls._type_is_integer  (v_value_type) then call pgxls.put_cell_integer   (xls, value::bigint,    xls.column_current);
+  elseif pgxls._type_is_numeric  (v_value_type) then call pgxls.put_cell_numeric   (xls, value::numeric,   xls.column_current);
+  elseif pgxls._type_is_date     (v_value_type) then call pgxls.put_cell_date      (xls, value::date,      xls.column_current);
+  elseif pgxls._type_is_time     (v_value_type) then call pgxls.put_cell_time      (xls, value::time,      xls.column_current);
+  elseif pgxls._type_is_timestamp(v_value_type) then call pgxls.put_cell_timestamp (xls, value::timestamp, xls.column_current);
+  elseif pgxls._type_is_boolean  (v_value_type) then call pgxls.put_cell_boolean   (xls, value::boolean,   xls.column_current);  
+  else                                               call pgxls.put_cell_text      (xls, value::text,      xls.column_current);  
   end if;
   call pgxls.format_cell(xls, xls.column_current, format_code, font_name, font_size, font_bold, font_italic, font_underline, font_strike, font_color, border_around, border_left, border_top, border_right, border_bottom, fill_foreground_color, alignment_horizontal, alignment_indent, alignment_vertical, alignment_text_wrap);
 end
@@ -879,8 +878,6 @@ begin
   call pgxls._build_file$xl_workbook(xls);
   call pgxls._build_file$content_types(xls);
   call pgxls._zip_build(xls);
-  drop table if exists qqq;
-  create table qqq as select * from pgxls_temp_file;
 end
 $$;
 

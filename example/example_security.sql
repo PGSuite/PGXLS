@@ -16,8 +16,8 @@ declare
   xls pgxls.xls; 
 begin
   xls := pgxls.create(array[10,10]);   
-  call pgxls.set_cell_text(xls, 'My');      
-  call pgxls.set_cell_text(xls, 'Report'); 
+  call pgxls.put_cell_text(xls, 'My');      
+  call pgxls.put_cell_text(xls, 'Report'); 
   call example.save_file_to_share_reports(xls, 'MyReport.xlsx');      
 end
 $$;

@@ -32,7 +32,7 @@ Save Excel file on server by SQL query
 call pgxls.save_file_by_query('/tmp/top_relations_by_size.xlsx', 'select oid,relname,pg_relation_size(oid) from pg_class order by 3 desc limit 10')
 ```
 
-Save file on command line  
+Save file on command line 
 ```bash
 psql -Aqt -c "select pgxls.get_file_by_query('select * from pg_class')" | xxd -r -ps > pg_class.xlsx
 ```
@@ -40,7 +40,6 @@ psql -Aqt -c "select pgxls.get_file_by_query('select * from pg_class')" | xxd -r
 ### Example #2 ###
 
 ```sql
-
 -- Create function that returns file (bytea)
 create or replace function excel_top_relations_by_size() returns bytea language plpgsql as $$
 declare 
@@ -51,22 +50,21 @@ begin
   xls := pgxls.create(array[10,80,15], array['oid','Name','Size, bytes']);
   -- Select data in loop
   for rec in
-    select oid,relname,pg_relation_size(oid) size from pg_class order by 3 desc limit 10
+    select oid,relname,pg_relation_size(oid) size from pg_class order by 3 desc limit 10    
   loop
     -- Add row
     call pgxls.add_row(xls);
     -- Set data from query into cells
-    call pgxls.set_cell_value(xls, rec.oid); 
-    call pgxls.set_cell_value(xls, rec.relname);
-    call pgxls.set_cell_value(xls, rec.size);
-  end loop;
+    call pgxls.put_cell(xls, rec.oid);      
+    call pgxls.put_cell(xls, rec.relname);   
+    call pgxls.put_cell(xls, rec.size);
+  end loop;  
   -- Returns file(bytea)
-  return pgxls.get_file(xls); 
+  return pgxls.get_file(xls);      
 end
 $$;
 -- Get file
 select excel_top_relations_by_size();
-
 ```
 
 Save file on command line
@@ -82,7 +80,7 @@ All examples in directory [example](https://github.com/PGSuite/PGXLS/tree/main/e
   
 *   **pgxls.add_row** - add row
   
-*   **pgxls.set_cell_value** - set cell value
+*   **pgxls.put_cell** - fill cell: set value and format
   
 *   **pgxls.get_file** - build and get file
 

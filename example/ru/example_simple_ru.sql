@@ -19,9 +19,9 @@ begin
     -- Добавляем строку
     call pgxls.add_row(xls);
     -- В ячейки устанавливаем данные из запроса
-    call pgxls.set_cell_value(xls, rec.oid);      
-    call pgxls.set_cell_value(xls, rec.relname);   
-    call pgxls.set_cell_value(xls, rec.size);
+    call pgxls.put_cell(xls, rec.oid);      
+    call pgxls.put_cell(xls, rec.relname);   
+    call pgxls.put_cellvalue(xls, rec.size);
   end loop;  
   -- Возвращаем файл(bytea)
   return pgxls.get_file(xls);      
