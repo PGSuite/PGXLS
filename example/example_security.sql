@@ -5,7 +5,7 @@ begin
   if filename like '%/%' then
     raise exception 'File name cannot contain path';   
   end if;
-  call pgxls.save_file(xls, '/mnt/share/report/'||filename);
+  call pgxls.save_file(xls, '/mnt/share/reports/'||filename);
 end 
 $$;
 grant execute on procedure example.save_file_to_share_reports to developer_1;

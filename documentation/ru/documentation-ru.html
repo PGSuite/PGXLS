@@ -434,6 +434,7 @@ a, a:link, a:active, a:visited {
 <li><a href="#security">Безопасность</a></li>
 
 <li><a href="#add_row">add_row</a></li>
+<li><a href="#add_row_texts">add_row_texts</a></li>
 <li><a href="#add_sheet">add_sheet</a></li>
 <li><a href="#add_sheet_by_query">add_sheet_by_query</a></li>
 <li><a href="#alignment_horizontal">alignment_horizontal</a></li>
@@ -446,7 +447,6 @@ a, a:link, a:active, a:visited {
 <li><a href="#create">create</a></li>
 
 <li><a href="#font_name_by_family">font_name$[family]</a></li>
-<li><a href="#format_all">format_all</a></li>
 <li><a href="#format_cell">format_cell</a></li>
 <li><a href="#format_row">format_row</a></li>
 
@@ -473,6 +473,7 @@ a, a:link, a:active, a:visited {
 <li><a href="#save_file">save_file</a></li>
 <li><a href="#save_file_by_query">save_file_by_query</a></li>
 
+<li><a href="#set_all_format">set_all_format</a></li>
 <li><a href="#set_column_current">set_column_current</a></li>
 <li><a href="#set_column_format_type">set_column_format_[type]</a></li>
 
@@ -610,6 +611,32 @@ a, a:link, a:active, a:visited {
 <div class="div-source-code border-color-div-source-code" style="height: 66px;">
 <pre><span class="color-source-sql-keyword">call</span> pgxls.add_row(xls);
 <span class="color-source-sql-keyword">call</span> pgxls.add_row(xls, 5);
+</pre>
+</div>
+
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
+
+
+<a id="add_row_texts"></a>
+<p style="font-size:larger;"><b>pgxls.add_row_texts</b></p>
+<br>
+Процедура добавляет строку с текстовыми значениями, позволяет менять параметры стиля
+<br>
+<br>
+Параметры:<br>
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">texts</td><td style="width: 5px;"></td><td style="white-space: nowrap;">text[]</td><td style="text-align: center; width: 30px;">-</td><td>значения ячеек</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_bold</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>жирный шрифт (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет заливки в формате &#39;RRGGBB&#39; или &#39;none&#39; (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
+</table>
+<br>
+Примеры использования:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 66px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.add_row_texts(xls, <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'ID'</span>,<span class="color-source-sql-string">'Name'</span>]);
+<span class="color-source-sql-keyword">call</span> pgxls.add_row_texts(xls, <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'x'</span>,<span class="color-source-sql-string">'√x'</span>,<span class="color-source-sql-string">'x²'</span>,<span class="color-source-sql-string">'md5(x)'</span>], font_bold=&#62;<span class="color-source-sql-keyword">true</span>, fill_foreground_color=&#62;pgxls.color&dollar;dark_gray(), alignment_horizontal=&#62;<span class="color-source-sql-string">'center'</span>);
 </pre>
 </div>
 
@@ -782,40 +809,6 @@ a, a:link, a:active, a:visited {
 <span class="color-source-sql-keyword">call</span> pgxls.set_cell_value(xls, 123, font_name=&#62;pgxls.font_name&dollar;monospace());
 </pre>
 </div>
-
-
-<div style="height: 25px;"></div>
-<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
-
-
-<a id="format_all"></a>
-<p style="font-size:larger;"><b>pgxls.format_all</b></p>
-<br>
-Процедура форматирует все ячейки строки и все столдцы для всех типов
-<br>
-<br>
-Параметры:<br>
-<table>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_</td><td style="width: 5px;"></td><td style="white-space: nowrap;">int</td><td style="text-align: center; width: 30px;">-</td><td>столбец (необязательный, по умолчанию текущий)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_name</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar</td><td style="text-align: center; width: 30px;">-</td><td>имя шрифта (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size</td><td style="width: 5px;"></td><td style="white-space: nowrap;">int</td><td style="text-align: center; width: 30px;">-</td><td>размер шрифта (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_bold</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>жирный шрифт (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет шрифта в формате &#39;RRGGBB&#39; или &#39;auto&#39; (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>граница всех сторон (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет заливки в формате &#39;RRGGBB&#39; или &#39;none&#39; (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_text_wrap</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>перенос текста при выравнивании (необязательный)</td></tr>
-</table>
-<br>
-Примеры использования:<br>
-<div class="div-source-code border-color-div-source-code" style="height: 66px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.format_all(xls, font_size=&#62;10, font_bold=&#62;<span class="color-source-sql-keyword">true</span>, fill_foreground_color=&#62;pgxls.color&dollar;light_green());
-<span class="color-source-sql-keyword">call</span> pgxls.format_all(xls, border=&#62;<span class="color-source-sql-string">'thin'</span>, alignment_horizontal=&#62;<span class="color-source-sql-string">'center'</span>);
-</pre>
-</div>
-
 
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
@@ -1243,7 +1236,37 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 </pre>
 </div>
 
+<div style="height: 25px;"></div>
+<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
 
+
+<a id="set_all_format"></a>
+<p style="font-size:larger;"><b>pgxls.set_all_format</b></p>
+<br>
+Процедура устанавливает формат ячеек для всех столбцов и всех типов данных
+<br>
+<br>
+Параметры:<br>
+<table>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>документ</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">column_</td><td style="width: 5px;"></td><td style="white-space: nowrap;">int</td><td style="text-align: center; width: 30px;">-</td><td>столбец (необязательный, по умолчанию текущий)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_name</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar</td><td style="text-align: center; width: 30px;">-</td><td>имя шрифта (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_size</td><td style="width: 5px;"></td><td style="white-space: nowrap;">int</td><td style="text-align: center; width: 30px;">-</td><td>размер шрифта (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_bold</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>жирный шрифт (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет шрифта в формате &#39;RRGGBB&#39; или &#39;auto&#39; (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">border</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.border_line</td><td style="text-align: center; width: 30px;">-</td><td>граница всех сторон (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>цвет заливки в формате &#39;RRGGBB&#39; или &#39;none&#39; (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по горизонтали (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_vertical</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_vertical</td><td style="text-align: center; width: 30px;">-</td><td>выравнивание по вертикали (необязательный)</td></tr>
+  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_text_wrap</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>перенос текста при выравнивании (необязательный)</td></tr>
+</table>
+<br>
+Примеры использования:<br>
+<div class="div-source-code border-color-div-source-code" style="height: 66px;">
+<pre><span class="color-source-sql-keyword">call</span> pgxls.set_all_format(xls, font_size=&#62;10, font_bold=&#62;<span class="color-source-sql-keyword">true</span>, fill_foreground_color=&#62;pgxls.color&dollar;light_green());
+<span class="color-source-sql-keyword">call</span> pgxls.set_all_format(xls, border=&#62;<span class="color-source-sql-string">'thin'</span>, alignment_horizontal=&#62;<span class="color-source-sql-string">'center'</span>);
+</pre>
+</div>
 
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
@@ -1314,7 +1337,6 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <span class="color-source-sql-keyword">call</span> pgxls.set_column_format_boolean(xls, 11, format_code=&#62;pgxls.get_format_code_boolean(<span class="color-source-sql-string">'Yes'</span>, <span class="color-source-sql-string">'No'</span>, <span class="color-source-sql-string">'Null'</span>));
 </pre>
 </div>
-
 
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
@@ -1437,6 +1459,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 <pre><span class="color-source-sql-keyword">call</span> pgxls.set_row_height(xls, 20);
 </pre>
 </div>
+
 
 <div style="height: 25px;"></div>
 <div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>

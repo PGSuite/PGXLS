@@ -71,14 +71,9 @@ begin
   call pgxls.put_cell(xls, 'Use "Print preview"'::text, font_size=>20, alignment_horizontal=>'center');
   call pgxls.merge_cells(xls, 4);
   call pgxls.add_row(xls);
-  call pgxls.format_all(xls, border=>'thin');
-  call pgxls.add_row(xls);  
-  call pgxls.format_all(xls, fill_foreground_color=>pgxls.color$light_gray());
-  call pgxls.put_cell(xls, 'x'::text);
-  call pgxls.put_cell(xls, '√x'::text);
-  call pgxls.put_cell(xls, 'x²'::text);  
-  call pgxls.put_cell(xls, 'md5(x)'::text); 
-  call pgxls.format_row(xls, alignment_horizontal=>'center', fill_foreground_color=>pgxls.color$dark_gray());
+  call pgxls.set_all_format(xls, border=>'thin');
+  call pgxls.add_row_texts(xls, array['x','√x','x²','md5(x)'], font_bold=>true, fill_foreground_color=>pgxls.color$dark_gray(), alignment_horizontal=>'center');
+  call pgxls.set_all_format(xls, fill_foreground_color=>pgxls.color$light_gray());
   call pgxls.set_column_format_numeric(xls, 2, format_code=>'0.0000');
   call pgxls.set_column_format(xls, 4, alignment_horizontal=>'center');
   for x in 1..100 loop
@@ -95,4 +90,4 @@ end
 $$;
 
 -- Get file
--- select excel_full();
+select excel_full();

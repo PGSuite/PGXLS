@@ -365,6 +365,18 @@ begin
 end
 $$;
 
+create or replace procedure pgxls.add_row_texts(inout xls pgxls.xls, texts text[], font_bold boolean default null, fill_foreground_color varchar(6) default null, alignment_horizontal pgxls.alignment_horizontal default null) language plpgsql as $$
+declare
+  v_text text;
+begin
+  call pgxls.add_row(xls);	
+  foreach v_text in array texts loop
+    call pgxls.put_cell_text(xls, v_text); 
+  end loop;
+  call pgxls.format_row(xls, font_bold=>font_bold, fill_foreground_color=>fill_foreground_color, alignment_horizontal=>alignment_horizontal);
+end
+$$;
+
 create or replace procedure pgxls.next_column(inout xls pgxls.xls) language plpgsql as $$
 begin
   xls.column_current := xls.column_current+1;
@@ -777,7 +789,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.format_all(
+create or replace procedure pgxls.set_all_format(
   inout xls pgxls.xls,
   font_name varchar default null, font_size int default null, font_bold boolean default null, font_color varchar(6) default null,
   border pgxls.border_line default null, 
@@ -785,9 +797,9 @@ create or replace procedure pgxls.format_all(
   alignment_horizontal pgxls.alignment_horizontal default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
 ) language plpgsql as $$
 begin
-  if xls.cells is not null then
-    call pgxls.format_row(xls, font_name, font_size, font_bold, font_color, border, fill_foreground_color, alignment_horizontal, alignment_vertical, alignment_text_wrap);
-  end if;
+  -- if xls.cells is not null then
+  --   call pgxls.format_row(xls, font_name, font_size, font_bold, font_color, border, fill_foreground_color, alignment_horizontal, alignment_vertical, alignment_text_wrap);
+  -- end if;
   for column_ in 1..xls.columns_len loop
     call pgxls.set_column_format(xls, column_, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);  
   end loop;
