@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru/">
 
 <head>
 
@@ -334,6 +334,32 @@ a, a:link, a:active, a:visited {
     text-align: left;
 }
 
+.table-source-code {
+    border-collapse: collapse;
+    overflow:scroll;
+    min-width: 95%;
+    max-width: 200px;   
+    vertical-align: middle;
+}
+
+.table-source-code th {
+    border-style: solid;
+    border-width: 1px; 
+    border-collapse: collapse;
+    padding: 3px;
+    font-family: monospace;
+    text-align: center;
+}
+
+.table-source-code td {
+    border-style: solid;
+    border-width: 1px; 
+    border-collapse: collapse;
+    padding: 3px 5px; 
+    font-family: monospace;
+    text-align: left;
+}
+
 .div-download {
     border-style: solid;
     border-width: 1px;  
@@ -571,7 +597,7 @@ a, a:link, a:active, a:visited {
   <span class="color-source-sql-keyword">if</span> filename <span class="color-source-sql-keyword">like</span> <span class="color-source-sql-string">'%/%'</span> <span class="color-source-sql-keyword">then</span>
     <span class="color-source-sql-keyword">raise</span> <span class="color-source-sql-keyword">exception</span> <span class="color-source-sql-string">'File name cannot contain path'</span>;   
   <span class="color-source-sql-keyword">end</span> <span class="color-source-sql-keyword">if</span>;
-  <span class="color-source-sql-keyword">call</span> pgxls.save_file(xls, <span class="color-source-sql-string">'/mnt/share/report/'</span>||filename);
+  <span class="color-source-sql-keyword">call</span> pgxls.save_file(xls, <span class="color-source-sql-string">'/mnt/share/reports/'</span>||filename);
 <span class="color-source-sql-keyword">end</span> 
 &dollar;&dollar;;
 <span class="color-source-sql-keyword">grant</span> <span class="color-source-sql-keyword">execute</span> <span class="color-source-sql-keyword">on</span> <span class="color-source-sql-keyword">procedure</span> example.save_file_to_share_reports <span class="color-source-sql-keyword">to</span> developer_1;

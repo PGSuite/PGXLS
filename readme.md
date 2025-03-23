@@ -1,4 +1,4 @@
-## PGXLS | Export to Excel from PostgreSQL
+## PGXLS | Report bulder and export to Excel from PostgreSQL
 
 Tool `PGXLS` is schema with stored procedures for creating files (bytea type) in Excel format (.xlsx).  
 Implemented dependence format on data type, conversion SQL query into sheet with autoformat and more.

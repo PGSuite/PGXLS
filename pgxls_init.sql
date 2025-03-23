@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.4.4'; -- 2024.10.25 19:53:37
+  return '24.4.14';
 end; $$;
 
 do $$ begin

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 
 <head>
 
@@ -334,6 +334,32 @@ a, a:link, a:active, a:visited {
     text-align: left;
 }
 
+.table-source-code {
+    border-collapse: collapse;
+    overflow:scroll;
+    min-width: 95%;
+    max-width: 200px;   
+    vertical-align: middle;
+}
+
+.table-source-code th {
+    border-style: solid;
+    border-width: 1px; 
+    border-collapse: collapse;
+    padding: 3px;
+    font-family: monospace;
+    text-align: center;
+}
+
+.table-source-code td {
+    border-style: solid;
+    border-width: 1px; 
+    border-collapse: collapse;
+    padding: 3px 5px; 
+    font-family: monospace;
+    text-align: left;
+}
+
 .div-download {
     border-style: solid;
     border-width: 1px;  
@@ -629,29 +655,6 @@ Parameters:<br>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">font_bold</td><td style="width: 5px;"></td><td style="white-space: nowrap;">boolean</td><td style="text-align: center; width: 30px;">-</td><td>bold font (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">fill_foreground_color</td><td style="width: 5px;"></td><td style="white-space: nowrap;">varchar(6)</td><td style="text-align: center; width: 30px;">-</td><td>fill color in format &#39;RRGGBB&#39; or &#39;none&#39; (optional)</td></tr>
   <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">alignment_horizontal</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.alignment_horizontal</td><td style="text-align: center; width: 30px;">-</td><td>horizontal alignment (optional)</td></tr>
-</table>
-<br>
-Examples:<br>
-<div class="div-source-code border-color-div-source-code" style="height: 66px;">
-<pre><span class="color-source-sql-keyword">call</span> pgxls.add_row_texts(xls, <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'ID'</span>,<span class="color-source-sql-string">'Name'</span>]);
-<span class="color-source-sql-keyword">call</span> pgxls.add_row_texts(xls, <span class="color-source-sql-keyword">array</span>[<span class="color-source-sql-string">'x'</span>,<span class="color-source-sql-string">'√x'</span>,<span class="color-source-sql-string">'x²'</span>,<span class="color-source-sql-string">'md5(x)'</span>], font_bold=&#62;<span class="color-source-sql-keyword">true</span>, fill_foreground_color=&#62;pgxls.color&dollar;dark_gray(), alignment_horizontal=&#62;<span class="color-source-sql-string">'center'</span>);
-</pre>
-</div>
-
-<div style="height: 25px;"></div>
-<div class="background-menu-line" style="width: 100%; height: 2px; padding: 0px; margin-bottom: 15px;"></div>
-
-
-<a id="add_row_texts"></a>
-<p style="font-size:larger;"><b>pgxls.add_row_texts</b></p>
-<br>
-Procedure adds one or more rows to sheet, sets current column to zero
-<br>
-<br>
-Parameters:<br>
-<table>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">xls</td><td style="width: 5px;"></td><td style="white-space: nowrap;">pgxls.xls</td><td style="text-align: center; width: 30px;">-</td><td>document</td></tr>
-  <tr><td style="width: 10px;"></td><td style="white-space: nowrap;">count</td><td style="width: 5px;"></td><td style="white-space: nowrap;">int</td><td style="text-align: center; width: 30px;">-</td><td>row count (optional, default 1)</td></tr>
 </table>
 <br>
 Examples:<br>
