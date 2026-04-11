@@ -172,6 +172,16 @@ a, a:link, a:active, a:visited {
     padding-bottom: 15px;
 } 
 
+.div-content-panel-left > ul > a {
+  text-decoration: none;
+}
+
+.div-content-panel-left > ul > li > a {
+  text-decoration: none;
+}
+
+
+
 .div-content-body {
     #border: solid 3px blue;
     padding: 10px 30px 10px 10px;
@@ -312,6 +322,7 @@ a, a:link, a:active, a:visited {
 .nav-mobile-item:hover {
    background: #2F718E;
 }
+
 
 .ul-articles li {
     padding-top: 17px;
@@ -590,18 +601,18 @@ Example:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 300px;">
 <pre><span class="color-source-sql-comment">-- postgres create wrapper for procedure pgxls.save_file with option security definer and access check,</span>
 <span class="color-source-sql-comment">-- grant privilege on wrapper    </span>
-<span class="color-source-sql-keyword">create</span> <span class="color-source-sql-keyword">or</span> <span class="color-source-sql-keyword">replace</span> <span class="color-source-sql-keyword">procedure</span> example.save_file_to_share_reports(<span class="color-source-sql-keyword">inout</span> xls pgxls.xls, filename <span class="color-source-sql-keyword">varchar</span>) <span class="color-source-sql-keyword">security</span> <span class="color-source-sql-keyword">definer</span> <span class="color-source-sql-keyword">language</span> plpgsql <span class="color-source-sql-keyword">as</span> &dollar;&dollar;  
+<span class="color-source-sql-keyword">create</span> <span class="color-source-sql-keyword">or</span> <span class="color-source-sql-keyword">replace</span> <span class="color-source-sql-keyword">procedure</span> example.save_file_to_share_reports(<span class="color-source-sql-keyword">inout</span> xls pgxls.xls, filename <span class="color-source-sql-keyword">varchar</span>) <span class="color-source-sql-keyword">security</span> <span class="color-source-sql-keyword">definer</span> <span class="color-source-sql-keyword">language</span> <span class="color-source-sql-keyword">plpgsql</span> <span class="color-source-sql-keyword">as</span> <span class="color-source-sql-block-border">&dollar;&dollar;</span>  
 <span class="color-source-sql-keyword">begin</span> 
   <span class="color-source-sql-keyword">if</span> filename <span class="color-source-sql-keyword">like</span> <span class="color-source-sql-string">'%/%'</span> <span class="color-source-sql-keyword">then</span>
     <span class="color-source-sql-keyword">raise</span> <span class="color-source-sql-keyword">exception</span> <span class="color-source-sql-string">'File name cannot contain path'</span>;   
   <span class="color-source-sql-keyword">end</span> <span class="color-source-sql-keyword">if</span>;
   <span class="color-source-sql-keyword">call</span> pgxls.save_file(xls, <span class="color-source-sql-string">'/mnt/share/reports/'</span>||filename);
 <span class="color-source-sql-keyword">end</span> 
-&dollar;&dollar;;
+<span class="color-source-sql-block-border">&dollar;&dollar;</span>;
 <span class="color-source-sql-keyword">grant</span> <span class="color-source-sql-keyword">execute</span> <span class="color-source-sql-keyword">on</span> <span class="color-source-sql-keyword">procedure</span> example.save_file_to_share_reports <span class="color-source-sql-keyword">to</span> developer_1;
 
 <span class="color-source-sql-comment">-- developer_1 create report and save it using wrapper example.save_file_to_share_reports</span>
-<span class="color-source-sql-keyword">create</span> <span class="color-source-sql-keyword">or</span> <span class="color-source-sql-keyword">replace</span> <span class="color-source-sql-keyword">procedure</span> example.my_report() <span class="color-source-sql-keyword">language</span> plpgsql <span class="color-source-sql-keyword">as</span> &dollar;&dollar;
+<span class="color-source-sql-keyword">create</span> <span class="color-source-sql-keyword">or</span> <span class="color-source-sql-keyword">replace</span> <span class="color-source-sql-keyword">procedure</span> example.my_report() <span class="color-source-sql-keyword">language</span> <span class="color-source-sql-keyword">plpgsql</span> <span class="color-source-sql-keyword">as</span> <span class="color-source-sql-block-border">&dollar;&dollar;</span>
 <span class="color-source-sql-keyword">declare</span> 
   xls pgxls.xls; 
 <span class="color-source-sql-keyword">begin</span>
@@ -610,7 +621,7 @@ Example:<br>
   <span class="color-source-sql-keyword">call</span> pgxls.put_cell_text(xls, <span class="color-source-sql-string">'Report'</span>); 
   <span class="color-source-sql-keyword">call</span> example.save_file_to_share_reports(xls, <span class="color-source-sql-string">'MyReport.xlsx'</span>);      
 <span class="color-source-sql-keyword">end</span>
-&dollar;&dollar;;
+<span class="color-source-sql-block-border">&dollar;&dollar;</span>;
 <span class="color-source-sql-keyword">call</span> example.my_report();
 </pre>
 </div>
@@ -966,7 +977,7 @@ Parameter:<br>
 <br>
 Example:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 48px;">
-<pre>return pgxls.get_file(xls);
+<pre><span class="color-source-sql-keyword">return</span> pgxls.get_file(xls);
 </pre>
 </div>
 
@@ -1008,7 +1019,7 @@ Parameter:<br>
 <br>
 Example:<br>
 <div class="div-source-code border-color-div-source-code" style="height: 48px;">
-<pre>return query <span class="color-source-sql-keyword">execute</span> pgxls.get_file_parts_query(xls);
+<pre><span class="color-source-sql-keyword">return</span> <span class="color-source-sql-keyword">query</span> <span class="color-source-sql-keyword">execute</span> pgxls.get_file_parts_query(xls);
 </pre>
 </div>
 

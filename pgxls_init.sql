@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '24.4.14';
+  return '25.2';
 end; $$;
 
 do $$ begin
@@ -595,7 +595,7 @@ declare
   v_cell pgxls._cell;
 begin
   if v_column<1 or v_column>xls.columns_len then 	
-  	raise exception 'Column % out of range [1,%]', v_column, xls.columns_len;
+  	raise exception 'PGSUITE-2004 Column % out of range [1,%]', v_column, xls.columns_len;
   end if;
   v_cell := xls.cells[v_column];
   if v_cell is null then
@@ -758,7 +758,7 @@ declare
 begin
   call pgxls._next_column_default(xls, column_);
   if xls.column_current<1 or xls.column_current>xls.columns_len then 	
-  	raise exception 'Column % out of range [1,%]', xls.column_current, xls.columns_len;
+  	raise exception 'PGSUITE-2004 Column % out of range [1,%]', xls.column_current, xls.columns_len;
   end if;
   if     pgxls._type_is_integer  (v_value_type) then call pgxls.put_cell_integer   (xls, value::bigint,    xls.column_current);
   elseif pgxls._type_is_numeric  (v_value_type) then call pgxls.put_cell_numeric   (xls, value::numeric,   xls.column_current);
@@ -781,7 +781,7 @@ create or replace procedure pgxls.format_row(
 ) language plpgsql as $$
 begin
   if xls.cells is null then 	
-  	raise exception 'Row not added, call pgxls.add_row first';
+  	raise exception 'PGSUITE-2005 Row not added, call pgxls.add_row first';
   end if;
   for column_ in 1..xls.columns_len loop
     call pgxls.format_cell(xls, column_, null, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);
@@ -875,7 +875,7 @@ $$;
 create or replace procedure pgxls._build_file(inout xls pgxls.xls) language plpgsql as $$
 begin
   if not exists (select from pgxls_temp_file where xls_id = xls.id and name='_rels/.rels') then
-    raise exception 'Temporary table cleared (xls.id = %)', xls.id;
+    raise exception 'PGSUITE-2006 Temporary table cleared (xls.id = %)', xls.id;
   end if;
   if exists (select from pgxls_temp_file where xls_id = xls.id and name='docProps/app.xml') then
     return;
