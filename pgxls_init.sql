@@ -2,7 +2,7 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '25.2';
+  return '26.2';
 end; $$;
 
 do $$ begin
@@ -224,7 +224,7 @@ begin
 end
 $$;
 
-create or replace function pgxls.create(columns_widths int[], columns_captions text[] default null, sheet_name varchar default null) returns pgxls.xls language plpgsql as $$
+create or replace function pgxls.create() returns pgxls.xls language plpgsql as $$
 declare
   v_xls pgxls.xls;
   v_format pgxls._format;
@@ -241,10 +241,18 @@ begin
   v_xls.sheets_len := 0;
   v_xls.strings_len := 0;
   call pgxls._create_column_default(v_xls);
-  call pgxls.add_sheet(v_xls, columns_widths, columns_captions, sheet_name);
   v_xls.trace_len := 0;
   v_xls.trace_ts := clock_timestamp();
   call pgxls._trace(v_xls, 'create', 'pgxls_version='||pgxls.pgxls_version()||', server_encoding='||current_setting('server_encoding')||', client_encoding='||current_setting('client_encoding'));
+  return v_xls;	
+end
+$$;
+
+create or replace function pgxls.create(columns_widths int[], columns_captions text[] default null, sheet_name varchar default null) returns pgxls.xls language plpgsql as $$
+declare
+  v_xls pgxls.xls := pgxls.create();
+begin
+  call pgxls.add_sheet(v_xls, columns_widths, columns_captions, sheet_name);
   return v_xls;	
 end
 $$;
@@ -268,16 +276,13 @@ begin
   xls.cells_merge_len := 0;
   xls.sheets_len := xls.sheets_len+1;
   xls.sheet_file_name := 'xl/worksheets/sheet'||xls.sheets_len||'.xml';
-  xls.sheet_name := coalesce(name, 'Sheet'||xls.sheets_len);
-  if columns_captions is not null then 
-    for c in 1..array_length(columns_captions,1) loop
-      call pgxls.put_cell(xls, columns_captions[c], font_bold => true, alignment_horizontal => 'center');
-    end loop;
-    call pgxls._build_file$xl_worksheets_sheet_row(xls);   
+  xls.sheet_name := coalesce(name, 'Sheet '||xls.sheets_len);
+  if columns_captions is not null then
+    call pgxls.add_row_texts(xls, columns_captions, font_bold=>true, alignment_horizontal=>'center'); 
+    call pgxls.set_page_rows_repeat(xls, 1);
   end if; 
   call pgxls.set_page_header(xls, 'PGSuite '||to_char(xls.datetime,'YYYY-MM-DD HH24:MI')||' &P#&N');
   call pgxls.set_page_margins(xls, 0.15, 0.2, 0.15, 0.4);
-  call pgxls.set_page_rows_repeat(xls, case when columns_captions is not null then 1 else null end);
   call pgxls.set_page_paper(xls, 'A4', 'portrait');
 end
 $$;
@@ -797,9 +802,6 @@ create or replace procedure pgxls.set_all_format(
   alignment_horizontal pgxls.alignment_horizontal default null, alignment_vertical pgxls.alignment_vertical default null, alignment_text_wrap boolean default null  
 ) language plpgsql as $$
 begin
-  -- if xls.cells is not null then
-  --   call pgxls.format_row(xls, font_name, font_size, font_bold, font_color, border, fill_foreground_color, alignment_horizontal, alignment_vertical, alignment_text_wrap);
-  -- end if;
   for column_ in 1..xls.columns_len loop
     call pgxls.set_column_format(xls, column_, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);  
   end loop;
@@ -877,6 +879,9 @@ begin
   if not exists (select from pgxls_temp_file where xls_id = xls.id and name='_rels/.rels') then
     raise exception 'PGSUITE-2006 Temporary table cleared (xls.id = %)', xls.id;
   end if;
+  if xls.sheets_len=0 then
+    raise exception 'PGSUITE-2007 Sheet not added, call pgxls.add_sheet first';
+  end if;
   if exists (select from pgxls_temp_file where xls_id = xls.id and name='docProps/app.xml') then
     return;
   end if;
@@ -921,8 +926,7 @@ create or replace function pgxls.get_file_by_query(query text) returns bytea lan
 declare
   xls pgxls.xls;
 begin
-  xls := pgxls.create(array[10]);
-  xls.sheets_len := 0;
+  xls := pgxls.create();
   call pgxls.add_sheet_by_query(xls, query);
   return pgxls.get_file(xls);	
 end

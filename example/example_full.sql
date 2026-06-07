@@ -34,7 +34,7 @@ begin
     call pgxls.put_cell(xls, md5(x::text));
   end loop;
   --------------------------------------------------------------------------------------------------------------------------------
-   -- Add sheet by query
+  -- Add sheet by query
   call pgxls.add_sheet_by_query(xls, 'select * from pg_class order by 1 limit 10', 'SQL query');
   --------------------------------------------------------------------------------------------------------------------------------
   -- Add sheet with merged cells
@@ -91,3 +91,6 @@ $$;
 
 -- Get file
 select excel_full();
+
+
+SELECT pghist.track('public', 'employees');

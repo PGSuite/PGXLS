@@ -21,7 +21,7 @@ begin
     -- В ячейки устанавливаем данные из запроса
     call pgxls.put_cell(xls, rec.oid);      
     call pgxls.put_cell(xls, rec.relname);   
-    call pgxls.put_cellvalue(xls, rec.size);
+    call pgxls.put_cell(xls, rec.size);
   end loop;  
   -- Возвращаем файл(bytea)
   return pgxls.get_file(xls);      
