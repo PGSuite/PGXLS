@@ -32,7 +32,11 @@ h2 {
 
 h3 {
     font-size: 100%;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
+
 
 div {
     text-align: justify;	
@@ -544,7 +548,7 @@ a, a:link, a:active, a:visited {
     
 
 <a id="usage_method"></a>
-<p style="font-size:larger;"><b>Принцип использования</b></p>
+<h2>Принцип использования</h2>
 <br>
 
 Для создания файла Excel на процедурном языке PL/pgSQL создается функция, которая выполняет следующее:
@@ -606,7 +610,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="security"></a>
-<p style="font-size:larger;"><b>Безопасность</b></p>
+<h2>Безопасность</h2>
 <br>
 Хранимые процедуры создаются с правами вызывающего (security invoker), соотвественно, передаваемые через параметры динамические SQL-запросы
 вызываются с этими правами.
@@ -648,8 +652,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="add_row"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_row</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_row</h3><br><br>
 Процедура добавляет одну или несколько строк на лист, обнуляет текущий столбец
 <br>
 <br>
@@ -671,8 +674,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="add_row_texts"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_row_texts</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_row_texts</h3><br><br>
 Процедура добавляет строку с текстовыми значениями, позволяет менять параметры стиля
 <br>
 <br>
@@ -697,8 +699,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="add_sheet"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_sheet</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_sheet</h3><br><br>
 Процедура добавляет новый лист в документ.<br>Если задан параметр <em>columns_captions</em>, то на лист добавляется строка с заголовками столбцов и к ней можно применить процедуру форматирования <a href="#format_row">pgxls.format_row</a>
 <br>
 <br>
@@ -721,8 +722,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="add_sheet_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_sheet_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_sheet_by_query</h3><br><br>
 Процедура выполняет SQL-запрос и добавляет новый лист с полученными данными.<br>Не рекомендуется к использованию в функциях-отчетах, т.к. является оберткой к <a href="#add_sheet">pgxls.add_sheet</a> для быстрого использования и не предполагает форматирования
 <br>
 <br>
@@ -744,8 +744,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="alignment_horizontal"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.alignment_horizontal</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.alignment_horizontal</h3><br><br>
 Тип enum, определяет выравнивание по горизонтали<br>Значения: left,center,right,justify,fill,distributed
 <br>
 
@@ -755,8 +754,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="alignment_vertical"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.alignment_vertical</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.alignment_vertical</h3><br><br>
 Тип enum, определяет выравнивание по вертикали<br>Значения: top,center,bottom,justify,distributed
 <br>
 
@@ -766,8 +764,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="border_line"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.border_line</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.border_line</h3><br><br>
 Тип enum, определяет внешний вид границы.<br>Значения: none,thin,thick,dashed,dotted,dashDot,dashDotDot,double
 <br>
 
@@ -778,8 +775,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="clear_file_parts"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.clear_file_parts</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.clear_file_parts</h3><br><br>
 Процедура удаляет файл из временной таблицы, используется совместно с <a href="#clear_file_parts">pgxls.get_file_parts_query</a>
 <br>
 <br>
@@ -794,8 +790,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="color_by_name"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.color$[name]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.color$[name]</h3><br><br>
 Функция возвращает цвет (тип varchar(6)) по названию
 <br>
 <br>
@@ -816,8 +811,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="create"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.create</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.create</h3><br><br>
 Функция создает, инициализирует и возращает документ (тип <em>pgxls.xls</em>).<br>Если параметр <em>columns_widths</em> не задан, документ создается без листа и первый лист необходимо добавить вручную.<br>Если задан параметр <em>columns_captions</em>, то на лист добавляется строка с заголовками столбцов и к ней можно применить процедуру форматирования <a href="#format_row">pgxls.format_row</a>
 <br>
 <br>
@@ -851,8 +845,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="font_name_by_family"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.font_name$[family]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.font_name$[family]</h3><br><br>
 Функция возвращает имя (тип varchar) по семейству шрифта
 <br>
 <br>
@@ -873,8 +866,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="format_cell"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.format_cell</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.format_cell</h3><br><br>
 Процедура форматирует ячейку
 <br>
 <br>
@@ -916,8 +908,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="format_row"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.format_row</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.format_row</h3><br><br>
 Процедура форматирует все ячейки текущей строки
 <br>
 <br>
@@ -947,8 +938,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_cell_height"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_cell_height</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_cell_height</h3><br><br>
 Функция возвращает высоту ячейки, обычно используется при явном указании высоты строки при вертикальном объединении ячеек
 <br>
 <br>
@@ -969,8 +959,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_column_name"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_column_name</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_column_name</h3><br><br>
 Функция возвращает имя столбца по номеру
 <br>
 <br>
@@ -990,8 +979,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_file"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file</h3><br><br>
 Функция формирует и возвращает файл (тип bytea)
 <br>
 <br>
@@ -1011,8 +999,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_file_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file_by_query</h3><br><br>
 Функция создает документ с данными по SQL-запросу, формирует и возвращает файл (тип bytea)
 <br>
 <br>
@@ -1032,8 +1019,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_file_parts_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file_parts_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file_parts_query</h3><br><br>
 Функция формирует файл и возвращает SQL-запрос (тип varchar) для получения файла по частям. Используется при получении больших файлов, после вычитывания файла необходимо вызвать процедуру <a href="#clear_file_parts">pgxls.clear_file_parts</a>
 <br>
 <br>
@@ -1053,8 +1039,7 @@ a, a:link, a:active, a:visited {
 
 
 <a id="get_format_code_boolean"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_format_code_boolean</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_format_code_boolean</h3><br><br>
 Функция формирует код формата (тип varchar) для логического значения
 <br>
 <br>
@@ -1077,8 +1062,7 @@ format2 := pgxls.get_format_code_boolean(text_true=&#62;<span class="color-sourc
 
 
 <a id="get_format_code_numeric"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_format_code_numeric</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_format_code_numeric</h3><br><br>
 Функция формирует код формата (тип varchar) для числового значения
 <br>
 <br>
@@ -1100,8 +1084,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="merge_cells"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.merge_cells</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.merge_cells</h3><br><br>
 Процедура объединяет ячейки
 <br>
 <br>
@@ -1126,8 +1109,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="next_column"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.next_column</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.next_column</h3><br><br>
 Процедура увеличивает текущий столбец
 <br>
 <br>
@@ -1148,8 +1130,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="page_paper_format"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.page_paper_format</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.page_paper_format</h3><br><br>
 Тип enum, определяет формат бумаги.<br>Значения: A3,A4,A5
 <br>
 
@@ -1159,8 +1140,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="page_orientation"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.page_orientation</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.page_orientation</h3><br><br>
 Тип enum, определяет ориентацию страницы.<br>Значения: portrait,landscape
 <br>
 
@@ -1170,8 +1150,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="pgxls_version"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.pgxls_version</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.pgxls_version</h3><br><br>
 Функция возвращает версию инструмента
 <br>
 
@@ -1181,8 +1160,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="put_cell"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.put_cell</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.put_cell</h3><br><br>
 Процедура заполняет ячейку: устанавливает значение и позволяет менять параметры стиля, присваивает значение текущего столбца
 <br>
 <br>
@@ -1225,8 +1203,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="put_cell_type"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.put_cell_[type]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.put_cell_[type]</h3><br><br>
 Процедура устанавливает значение ячейки, присваивает значение текущего столбца.<br><br>Используется при создании больших документов, т.к. не требуется проверка типа и изменение стиля. В остальных случая рекомендуется использовать <a href="#put_cell">pgxls.put_cell</a>
 <br>
 <br>
@@ -1253,8 +1230,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="save_file"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.save_file</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.save_file</h3><br><br>
 Процедура сохраняет документ в файл на сервере, выполняется под суперпользователем (необходимы права на выполнение lo_export)
 <br>
 <br>
@@ -1276,8 +1252,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="save_file_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.save_file_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.save_file_by_query</h3><br><br>
 Процедура создает документ по SQL-запросу и сохраняет его в файл на сервере, выполняется под суперпользователем (необходимы права на выполнение lo_export)
 <br>
 <br>
@@ -1299,8 +1274,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_all_format"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_all_format</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_all_format</h3><br><br>
 Процедура для последующих строк устанавливает формат ячеек для всех столбцов и всех типов данных
 <br>
 <br>
@@ -1331,8 +1305,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_column_current"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_column_current</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_column_current</h3><br><br>
 Процедура устанавливает текущий столбец
 <br>
 <br>
@@ -1353,8 +1326,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_column_format_type"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_column_format_[type]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_column_format_[type]</h3><br><br>
 Процедура устанавливает формат ячеек столбца для последующих строк в зависимости от типа данных.<br>Если тип данных не указан (процедура pgxls.set_column_format), то формат устанавливается для всех типов
 <br>
 <br>
@@ -1401,8 +1373,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_page_paper"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_paper</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_paper</h3><br><br>
 Процедура устанавливает параметры бумаги: формат и ориентацию
 <br>
 <br>
@@ -1425,8 +1396,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_page_header"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_header</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_header</h3><br><br>
 Процедура устанавливает заголовок страницы
 <br>
 <br>
@@ -1451,8 +1421,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_page_margins"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_margins</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_margins</h3><br><br>
 Процедура устанавливает отступы страницы
 <br>
 <br>
@@ -1477,8 +1446,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_page_rows_repeat"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_rows_repeat</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_rows_repeat</h3><br><br>
 Процедура устанавливает строки, повторяющиеся на каждой странице
 <br>
 <br>
@@ -1501,8 +1469,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="set_row_height"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_row_height</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_row_height</h3><br><br>
 Процедура устанавливает высоту текущей строки
 <br>
 <br>
@@ -1524,8 +1491,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="xls"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.xls</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.xls</h3><br><br>
 Составной тип, содержит информацию по документу
 <br>
 

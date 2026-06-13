@@ -32,7 +32,11 @@ h2 {
 
 h3 {
     font-size: 100%;
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
+
 
 div {
     text-align: justify;	
@@ -545,7 +549,7 @@ a, a:link, a:active, a:visited {
     
 
 <a id="usage_method"></a>
-<p style="font-size:larger;"><b>Usage method</b></p>
+<h2>Usage method</h2>
 <br>
 
 PL/pgSQL function is created that does:
@@ -573,7 +577,7 @@ Procedures <a href="#set_column_current">pgxls.set_column_current</a> and <a hre
 <br>
 <br>
 When adding a row or sheet, the current row is written to temporary table and cannot be changed.
-Row height calculated automatically, but can be set manually using procedure
+The row height is calculated automatically, but can be set manually using procedure
 <a href="#set_row_height">pgxls.set_row_height</a>.
 <br>
 <br>
@@ -604,7 +608,7 @@ Not allowed to access internal fields of pgxls.xls and use procedures and types 
 
 
 <a id="security"></a>
-<p style="font-size:larger;"><b>Security</b></p>
+<h2>Security</h2>
 <br>
 Stored procedures are created with option <em>security invoker</em>, passed through parameters dynamic SQL queries
 are called with these rights.
@@ -646,8 +650,7 @@ Example:<br>
 
 
 <a id="add_row"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_row</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_row</h3><br><br>
 Procedure adds one or more rows to the sheet, sets current column to zero
 <br>
 <br>
@@ -669,8 +672,7 @@ Examples:<br>
 
 
 <a id="add_row_texts"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_row_texts</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_row_texts</h3><br><br>
 Procedure adds row with text values, allows to change the style parameters
 <br>
 <br>
@@ -695,8 +697,7 @@ Examples:<br>
 
 
 <a id="add_sheet"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_sheet</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_sheet</h3><br><br>
 Procedure adds new sheet to document.<br>If the <em>columns_captions</em> parameter is specified, a row with column captions is added to the sheet, and the <a href="#format_row">pgxls.format_row</a> procedure can be applied to it
 <br>
 <br>
@@ -719,8 +720,7 @@ Example:<br>
 
 
 <a id="add_sheet_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.add_sheet_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.add_sheet_by_query</h3><br><br>
 The procedure executes an SQL query and adds a new sheet with the received data.<br>Not recommended for use in report functions, as it is a wrapper around <a href="#add_sheet">pgxls.add_sheet</a> for quick use and does not support formatting
 <br>
 <br>
@@ -742,8 +742,7 @@ Example:<br>
 
 
 <a id="alignment_horizontal"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.alignment_horizontal</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.alignment_horizontal</h3><br><br>
 Enum type, defines horizontal alignment<br>Values: left,center,right,justify,fill,distributed
 <br>
 
@@ -753,8 +752,7 @@ Enum type, defines horizontal alignment<br>Values: left,center,right,justify,fil
 
 
 <a id="alignment_vertical"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.alignment_vertical</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.alignment_vertical</h3><br><br>
 Enum type, defines vertical alignment<br>Values: top,center,bottom,justify,distributed
 <br>
 
@@ -764,8 +762,7 @@ Enum type, defines vertical alignment<br>Values: top,center,bottom,justify,distr
 
 
 <a id="border_line"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.border_line</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.border_line</h3><br><br>
 Enum type, defines border line<br>Values: none,thin,thick,dashed,dotted,dashDot,dashDotDot,double
 <br>
 
@@ -775,8 +772,7 @@ Enum type, defines border line<br>Values: none,thin,thick,dashed,dotted,dashDot,
 
 
 <a id="clear_file_parts"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.clear_file_parts</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.clear_file_parts</h3><br><br>
 Procedure removes file from temporary table, used together with <a href="#clear_file_parts">pgxls.get_file_parts_query</a>
 <br>
 <br>
@@ -791,8 +787,7 @@ Parameter:<br>
 
 
 <a id="color_by_name"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.color$[name]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.color$[name]</h3><br><br>
 Function returns color (type varchar(6)) by name
 <br>
 <br>
@@ -813,8 +808,7 @@ Examples:<br>
 
 
 <a id="create"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.create</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.create</h3><br><br>
 The function creates, initializes and returns a document (type <em>pgxls.xls</em>).<br>If the <em>columns_widths</em> parameter is not specified, the document is created without a sheet and the first sheet must be added manually.<br>If the <em>columns_captions</em> parameter is specified, a row with column captions is added to the sheet, and the <a href="#format_row">pgxls.format_row</a> procedure can be applied to it
 <br>
 <br>
@@ -848,8 +842,7 @@ Examples:<br>
 
 
 <a id="font_name_by_family"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.font_name$[family]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.font_name$[family]</h3><br><br>
 Function returns name (type varchar) by font family
 <br>
 <br>
@@ -870,8 +863,7 @@ Examples:<br>
 
 
 <a id="format_cell"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.format_cell</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.format_cell</h3><br><br>
 The procedure formats a cell
 <br>
 <br>
@@ -912,8 +904,7 @@ Examples:<br>
 
 
 <a id="format_row"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.format_row</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.format_row</h3><br><br>
 The procedure formats all cells in the current row
 <br>
 <br>
@@ -943,8 +934,7 @@ Examples:<br>
 
 
 <a id="get_cell_height"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_cell_height</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_cell_height</h3><br><br>
 Function returns the cell height, usually used when specifying the row height when vertically merging cells
 <br>
 <br>
@@ -965,8 +955,7 @@ Example:<br>
 
 
 <a id="get_column_name"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_column_name</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_column_name</h3><br><br>
 Function returns column name (type varchar) by number
 <br>
 <br>
@@ -986,8 +975,7 @@ Example:<br>
 
 
 <a id="get_file"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file</h3><br><br>
 Function builds and returns file (type bytea)
 <br>
 <br>
@@ -1007,8 +995,7 @@ Example:<br>
 
 
 <a id="get_file_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file_by_query</h3><br><br>
 Function creates document by SQL query, builds and returns file (type bytea)
 <br>
 <br>
@@ -1028,8 +1015,7 @@ Example:<br>
 
 
 <a id="get_file_parts_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_file_parts_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_file_parts_query</h3><br><br>
 Function builds file and returns SQL query (varchar type) to get file in parts. Used for large files, after receiving  file, need to call procedure <a href="#clear_file_parts">pgxls.clear_file_parts</a>
 <br>
 <br>
@@ -1049,8 +1035,7 @@ Example:<br>
 
 
 <a id="get_format_code_boolean"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_format_code_boolean</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_format_code_boolean</h3><br><br>
 The function builds a format code (varchar type) for a logical value
 <br>
 <br>
@@ -1073,8 +1058,7 @@ format2 := pgxls.get_format_code_boolean(text_true=&#62;<span class="color-sourc
 
 
 <a id="get_format_code_numeric"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.get_format_code_numeric</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.get_format_code_numeric</h3><br><br>
 The function builds a format code (varchar type) for a numeric value
 <br>
 <br>
@@ -1096,8 +1080,7 @@ format2 := pgxls.get_format_code_numeric(decimal_places=&#62;0, thousands_separa
 
 
 <a id="merge_cells"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.merge_cells</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.merge_cells</h3><br><br>
 Procedure merges cells
 <br>
 <br>
@@ -1123,8 +1106,7 @@ Examples:<br>
 
 
 <a id="next_column"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.next_column</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.next_column</h3><br><br>
 Procedure increases current column
 <br>
 <br>
@@ -1144,8 +1126,7 @@ Example:<br>
 
 
 <a id="page_paper_format"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.page_paper_format</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.page_paper_format</h3><br><br>
 Enum type, defines paper format<br>Values: A3,A4,A5
 <br>
 
@@ -1155,8 +1136,7 @@ Enum type, defines paper format<br>Values: A3,A4,A5
 
 
 <a id="page_orientation"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.page_orientation</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.page_orientation</h3><br><br>
 Enum type, defines page orientation<br>Values: portrait,landscape
 <br>
 
@@ -1166,8 +1146,7 @@ Enum type, defines page orientation<br>Values: portrait,landscape
 
 
 <a id="pgxls_version"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.pgxls_version</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.pgxls_version</h3><br><br>
 Function returns tool version
 <br>
 
@@ -1177,8 +1156,7 @@ Function returns tool version
 
 
 <a id="put_cell"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.put_cell</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.put_cell</h3><br><br>
 The procedure fills the cell: sets the value and allows change the style parameters, assigns current column
 <br>
 <br>
@@ -1221,8 +1199,7 @@ Examples:<br>
 
 
 <a id="put_cell_type"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.put_cell_[type]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.put_cell_[type]</h3><br><br>
 Procedure sets cell value, assigns current column.<br>Used for large documents (no type checking and no style change). In other cases, recommended to use <a href="#put_cell">pgxls.put_cell</a>
 <br>
 <br>
@@ -1249,8 +1226,7 @@ Examples:<br>
 
 
 <a id="save_file"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.save_file</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.save_file</h3><br><br>
 The procedure saves the document to file on server, calls as superuser (privilege to execute lo_export is required)
 <br>
 <br>
@@ -1272,8 +1248,7 @@ Examples:<br>
 
 
 <a id="save_file_by_query"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.save_file_by_query</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.save_file_by_query</h3><br><br>
 The procedure creates document using an SQL query and saves it to file on server, calls as superuser (privilege to execute lo_export is required)
 <br>
 <br>
@@ -1295,8 +1270,7 @@ Examples:<br>
 
 
 <a id="set_all_format"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_all_format</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_all_format</h3><br><br>
 The procedure for subsequent rows sets the cell format for all columns and all data types
 <br>
 <br>
@@ -1326,8 +1300,7 @@ Examples:<br>
 
 
 <a id="set_column_current"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_column_current</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_column_current</h3><br><br>
 Procedure sets current column
 <br>
 <br>
@@ -1348,8 +1321,7 @@ Example:<br>
 
 
 <a id="set_column_format_type"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_column_format_[type]</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_column_format_[type]</h3><br><br>
 The procedure sets the format of the column cells for subsequent rows depending on the data type.<br>If data type not specified (procedure pgxls.set_column_format), then format set for all types
 <br>
 <br>
@@ -1396,8 +1368,7 @@ Examples:<br>
 
 
 <a id="set_page_paper"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_paper</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_paper</h3><br><br>
 Procedure sets paper parameters: format and orientation
 <br>
 <br>
@@ -1420,8 +1391,7 @@ Examples:<br>
 
 
 <a id="set_page_header"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_header</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_header</h3><br><br>
 Procedure sets page header
 <br>
 <br>
@@ -1446,8 +1416,7 @@ Examples:<br>
 
 
 <a id="set_page_margins"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_margins</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_margins</h3><br><br>
 Procedure sets page margins
 <br>
 <br>
@@ -1472,8 +1441,7 @@ Examples:<br>
 
 
 <a id="set_page_rows_repeat"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_page_rows_repeat</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_page_rows_repeat</h3><br><br>
 Procedure sets rows that are repeated on each page
 <br>
 <br>
@@ -1496,8 +1464,7 @@ Examples:<br>
 
 
 <a id="set_row_height"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.set_row_height</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.set_row_height</h3><br><br>
 Procedure sets height of current row
 <br>
 <br>
@@ -1519,8 +1486,7 @@ Example:<br>
 
 
 <a id="xls"></a>
-<h3 style="font-size:larger; font-weight: normal; padding: 5px;"><b>pgxls.xls</b></h3>
-<br>
+<h3 style="font-size:larger; padding: 5px 0px 5px 5px; display: inline;">pgxls.xls</h3><br><br>
 Composite type, document data
 <br>
 
