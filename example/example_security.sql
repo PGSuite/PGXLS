@@ -2,7 +2,7 @@
 -- grant privilege on wrapper    
 create or replace procedure example.save_file_to_share_reports(inout xls pgxls.xls, filename varchar) security definer language plpgsql as $$  
 begin 
-  if filename !~ '^[\w]+.xlsx$' then
+  if filename !~ '^[\w]+\.xlsx$' then
     raise exception 'Invalid file name';   
   end if;
   call pgxls.save_file(xls, '/mnt/share/reports/'||filename);

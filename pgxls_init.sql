@@ -2,25 +2,28 @@ create schema if not exists pgxls;
 
 create or replace function pgxls.pgxls_version() returns varchar language plpgsql as $$
 begin
-  return '26.2';
+  return '26.3';
 end; $$;
 
 do $$ begin
+  if to_regtype('pgxls.page_paper_format') is null then
+    create type pgxls.page_paper_format as enum ('A3','A4','A5');
+  end if;
+  if to_regtype('pgxls.page_orientation') is null then
+    create type pgxls.page_orientation as enum ('portrait','landscape');
+  end if;
   if to_regtype('pgxls.alignment_horizontal') is null then	
     create type pgxls.alignment_horizontal as enum ('left', 'center', 'right', 'justify', 'fill', 'distributed');
   end if;   
   if to_regtype('pgxls.alignment_vertical') is null then 
     create type pgxls.alignment_vertical as enum ('top', 'center', 'bottom', 'justify', 'distributed');
   end if;
+  if to_regtype('pgxls.font_family') is null then
+    create type pgxls.font_family as enum ('sans','sans_serif','monospace');
+  end if;
   if to_regtype('pgxls.border_line') is null then
     create type pgxls.border_line as enum ('none', 'thin', 'thick', 'dashed', 'dotted', 'dashDot', 'dashDotDot', 'double');
   end if;
-  if to_regtype('pgxls.page_paper_format') is null then
-    create type pgxls.page_paper_format as enum ('A3','A4','A5');
-  end if;
-  if to_regtype('pgxls.page_orientation') is null then
-    create type pgxls.page_orientation as enum ('portrait','landscape');
-  end if;   
   --
   if to_regtype('pgxls._format') is null then
     create type pgxls._format as (
@@ -166,19 +169,33 @@ begin
 end
 $$;
 
-create or replace function pgxls.font_name$sans()       returns varchar language plpgsql as $$ begin return 'Arial';           end $$;
-create or replace function pgxls.font_name$sans_serif() returns varchar language plpgsql as $$ begin return 'Times New Roman'; end $$;
-create or replace function pgxls.font_name$monospace()  returns varchar language plpgsql as $$ begin return 'Courier New';     end $$;
+create or replace function pgxls.get_font_name(font_family pgxls.font_family) returns varchar language plpgsql immutable as $$
+begin
+ return 
+   case
+     when font_family='sans'       then 'Arial'
+     when font_family='sans_serif' then 'Times New Roman'  
+     when font_family='monospace'  then 'Courier New'
+   end;  
+end
+$$; 
 
-create or replace function pgxls._color(red int, green int, blue int) returns varchar(6) language plpgsql as $$ begin return upper(lpad(to_hex(red & 255),2,'0')||lpad(to_hex(green & 255),2,'0')||lpad(to_hex(blue & 255),2,'0')); end $$;
-create or replace function pgxls.color$light_red()   returns varchar(6) language plpgsql as $$ begin return pgxls._color(255,0,0);     end $$;
-create or replace function pgxls.color$light_green() returns varchar(6) language plpgsql as $$ begin return pgxls._color(0,255,0);     end $$;
-create or replace function pgxls.color$light_blue()  returns varchar(6) language plpgsql as $$ begin return pgxls._color(0,0,255);     end $$;
-create or replace function pgxls.color$light_gray()  returns varchar(6) language plpgsql as $$ begin return pgxls._color(211,211,211); end $$;
-create or replace function pgxls.color$dark_red()    returns varchar(6) language plpgsql as $$ begin return pgxls._color(128,0,0);     end $$;
-create or replace function pgxls.color$dark_green()  returns varchar(6) language plpgsql as $$ begin return pgxls._color(0,128,0);     end $$;
-create or replace function pgxls.color$dark_blue()   returns varchar(6) language plpgsql as $$ begin return pgxls._color(0,0,128);     end $$;
-create or replace function pgxls.color$dark_gray()   returns varchar(6) language plpgsql as $$ begin return pgxls._color(169,169,169); end $$;
+create or replace function pgxls._color_hex(color varchar) returns varchar(6) language plpgsql immutable as $$
+begin
+  return 
+    case
+      when color='light_red'   then 'FF0000'
+      when color='light_green' then '00FF00'
+      when color='light_blue'  then '0000FF'
+      when color='light_gray'  then 'D3D3D3'
+      when color='dark_red'    then '800000'
+      when color='dark_green'  then '008000'
+      when color='dark_blue'   then '000080'
+      when color='dark_gray'   then 'A9A9A9'
+      else color
+    end;
+end
+$$;
 
 create or replace procedure pgxls._create_column_default(inout xls pgxls.xls) language plpgsql as $$
 declare
@@ -188,7 +205,7 @@ declare
   v_style pgxls._style; 
   v_column pgxls._column;
 begin
-  v_font.name      := pgxls.font_name$sans();
+  v_font.name      := pgxls.get_font_name('sans');
   v_font.size      := 10;
   v_font.bold      := false;
   v_font.italic    := false;
@@ -248,26 +265,26 @@ begin
 end
 $$;
 
-create or replace function pgxls.create(columns_widths int[], columns_captions text[] default null, sheet_name varchar default null) returns pgxls.xls language plpgsql as $$
+create or replace function pgxls.create(column_widths int[], column_headers text[] default null, sheet_name varchar default null) returns pgxls.xls language plpgsql as $$
 declare
   v_xls pgxls.xls := pgxls.create();
 begin
-  call pgxls.add_sheet(v_xls, columns_widths, columns_captions, sheet_name);
+  call pgxls.add_sheet(v_xls, column_widths, column_headers, sheet_name);
   return v_xls;	
 end
 $$;
 
-create or replace procedure pgxls.add_sheet(inout xls pgxls.xls, columns_widths int[], columns_captions text[] default null, name varchar default null) language plpgsql as $$
+create or replace procedure pgxls.add_sheet(inout xls pgxls.xls, column_widths int[], column_headers text[] default null, name varchar default null) language plpgsql as $$
 declare
   v_column pgxls._column;
 begin
   if xls.sheets_len>0 then 	
     call pgxls._build_file$xl_worksheets_sheet(xls);
   end if; 
-  xls.columns_len := array_length(columns_widths,1);
+  xls.columns_len := array_length(column_widths,1);
   for c in 1..xls.columns_len loop
     v_column := xls.column_default;
-    v_column.width := columns_widths[c];
+    v_column.width := column_widths[c];
     v_column.name := pgxls.get_column_name(c);
     xls.columns[c] := v_column;
   end loop;
@@ -277,8 +294,8 @@ begin
   xls.sheets_len := xls.sheets_len+1;
   xls.sheet_file_name := 'xl/worksheets/sheet'||xls.sheets_len||'.xml';
   xls.sheet_name := coalesce(name, 'Sheet '||xls.sheets_len);
-  if columns_captions is not null then
-    call pgxls.add_row_texts(xls, columns_captions, font_bold=>true, alignment_horizontal=>'center'); 
+  if column_headers is not null then
+    call pgxls.add_row_texts(xls, column_headers, font_bold=>true, alignment_horizontal=>'center'); 
     call pgxls.set_page_rows_repeat(xls, 1);
   end if; 
   call pgxls.set_page_header(xls, 'PGSuite '||to_char(xls.datetime,'YYYY-MM-DD HH24:MI')||' &P#&N');
@@ -290,9 +307,9 @@ $$;
 create or replace procedure pgxls.add_sheet_by_query(inout xls pgxls.xls, query text, name varchar default null) language plpgsql as $$
 declare
   v_rec_column record;
-  v_columns_names varchar(256)[];
-  v_columns_types regtype[];
-  v_columns_widths int[];   
+  v_column_headers varchar(256)[];
+  v_column_types regtype[];
+  v_column_widths int[];   
   v_columns_len int := 0;
   v_sql_block text;
 begin
@@ -317,14 +334,14 @@ begin
       order by attnum
   loop
     v_columns_len := v_columns_len + 1;
-    v_columns_names[v_columns_len] := v_rec_column.attname;
-    v_columns_widths[v_columns_len] := 
+    v_column_headers[v_columns_len] := v_rec_column.attname;
+    v_column_widths[v_columns_len] := 
       case when v_rec_column.typcategory='N' then 15
            when v_rec_column.typname in ('date','time','timetz','bool') then 12
            when v_rec_column.typname in ('timestamp','timestamptz') then 20
            else 35
       end;
-    v_columns_widths[v_columns_len] := greatest(v_columns_widths[v_columns_len], length(v_rec_column.attname)*1.5);
+    v_column_widths[v_columns_len] := greatest(v_column_widths[v_columns_len], length(v_rec_column.attname)*1.5);
     v_sql_block := v_sql_block||
       '    call pgxls.put_cell_'||
       case when pgxls._type_is_integer  (v_rec_column.typname) then 'integer   (xls, rec.'||quote_ident(v_rec_column.attname)||'::bigint'
@@ -342,7 +359,7 @@ begin
     '  update pgxls_query_block_var set var_xls=xls;'||xls.newline||
     'end'||xls.newline||
     '$block$'||xls.newline;
-  call pgxls.add_sheet(xls, v_columns_widths, v_columns_names, name);
+  call pgxls.add_sheet(xls, v_column_widths, v_column_headers, name);
   if to_regtype('pgxls_query_block_var') is null then
     create temp table pgxls_query_block_var (var_xls pgxls.xls);
   else
@@ -461,6 +478,7 @@ declare
   v_fonts_len int := array_length(xls.fonts,1);
   v_font pgxls._font := xls.fonts[font]; 
 begin
+  color := pgxls._color_hex(color);
   if name      is not null then v_font.name      := name;     end if;
   if size      is not null then v_font.size      := size;     end if;
   if bold      is not null then v_font.bold      := bold;     end if;
@@ -516,6 +534,7 @@ declare
   v_fills_upper int := coalesce(array_upper(xls.fills,1),1);
   v_fill pgxls._fill;
 begin
+  foreground_color := pgxls._color_hex(foreground_color);
   if foreground_color is null or length(foreground_color)<6 then
     fill := 0;
     foreground_color := 'none';
@@ -550,7 +569,7 @@ declare
   v_funcs_call text := '';   
 begin
   for v_type in (select * from unnest(array['text','integer','numeric','date','time','timestamp','boolean']) with ordinality as t(name, position)) loop
-      v_func_name := 'pgxls.set_column_format_'||v_type.name;
+      v_func_name := 'pgxls.set_column_default_format_'||v_type.name;
     execute  
       'create or replace procedure '||v_func_name||'(inout xls pgxls.xls, column_ int, format_code varchar default null, '||v_func_params_def||') language plpgsql as $$'||v_newline||
       'declare'||v_newline||
@@ -585,7 +604,7 @@ begin
     v_funcs_call := v_funcs_call || '  call '||v_func_name||'(xls, column_, null, '||v_func_params_call||');'||v_newline;
   end loop; 
   execute
-    'create or replace procedure pgxls.set_column_format(inout xls pgxls.xls, column_ int, '||v_func_params_def||') language plpgsql as $$'||v_newline||
+    'create or replace procedure pgxls.set_column_default_format(inout xls pgxls.xls, column_ int, '||v_func_params_def||') language plpgsql as $$'||v_newline||
     'begin'||v_newline||
     v_funcs_call||
     'end'||v_newline||
@@ -794,7 +813,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_all_format(
+create or replace procedure pgxls.set_row_default_format(
   inout xls pgxls.xls,
   font_name varchar default null, font_size int default null, font_bold boolean default null, font_color varchar(6) default null,
   border pgxls.border_line default null, 
@@ -803,7 +822,7 @@ create or replace procedure pgxls.set_all_format(
 ) language plpgsql as $$
 begin
   for column_ in 1..xls.columns_len loop
-    call pgxls.set_column_format(xls, column_, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);  
+    call pgxls.set_column_default_format(xls, column_, font_name, font_size, font_bold, null, null, null, font_color, border, null, null, null, null, fill_foreground_color, alignment_horizontal, null, alignment_vertical, alignment_text_wrap);  
   end loop;
 end
 $$;
@@ -829,7 +848,7 @@ begin
 end
 $$;
 
-create or replace procedure pgxls.set_page_header(inout xls pgxls.xls, header text, alignment pgxls.alignment_horizontal default 'right', font_name varchar default pgxls.font_name$sans(), font_size int default 6) language plpgsql as $$
+create or replace procedure pgxls.set_page_header(inout xls pgxls.xls, header text, alignment pgxls.alignment_horizontal default 'right', font_name varchar default pgxls.get_font_name('sans'), font_size int default 6) language plpgsql as $$
 declare
   v_page pgxls._page := xls.page;
 begin
@@ -904,19 +923,19 @@ declare
 begin
   call pgxls._build_file(xls);	
   v_file := (select string_agg(body, null order by name collate "C", part, subpart) from pgxls_temp_file where xls_id=xls.id);
-  call pgxls.clear_file_parts(xls); 
+  call pgxls.delete_file_data(xls); 
   return v_file;	
 end
 $$;
 
-create or replace function pgxls.get_file_parts_query(xls pgxls.xls) returns varchar language plpgsql as $$
+create or replace function pgxls.get_query_file_stream(xls pgxls.xls) returns varchar language plpgsql as $$
 begin	
   call pgxls._build_file(xls);
   return 'select body from pgxls_temp_file where xls_id='||xls.id||' order by name collate "C", part, subpart';
 end
 $$;
 
-create or replace procedure pgxls.clear_file_parts(inout xls pgxls.xls) language plpgsql as $$
+create or replace procedure pgxls.delete_file_data(inout xls pgxls.xls) language plpgsql as $$
 begin
   delete from pgxls_temp_file where xls_id=xls.id;  
 end
